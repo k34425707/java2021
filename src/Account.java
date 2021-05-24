@@ -62,7 +62,7 @@ public class Account
         return this.description;
     }
 
-    public String writeIntoCsvFile()
+    public String formatCsvString()
     {
         return String.format(getYear()+","+getMonth()+","+getDate()+","+getType()+","+getDescription()+","+getMoneySum());
     }
