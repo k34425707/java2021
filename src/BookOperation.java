@@ -9,8 +9,8 @@ public class BookOperation
 {
     public void addAccountsIntoCsvFile( ArrayList<Account> input)
     {
-        String directoryPath;
-        String csvFileName;
+        String directoryPath;//目錄路徑
+        String csvFileName;//檔名
         File directory;
         File csvFile;
         BufferedWriter bw;
@@ -30,7 +30,7 @@ public class BookOperation
                     csvFile.createNewFile();
                 }
                 bw=new BufferedWriter(new FileWriter(csvFile,true));
-                bw.write(account.writeIntoCsvFile());
+                bw.write(account.formatCsvString());
                 bw.newLine();
                 bw.close();
             }
