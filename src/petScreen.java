@@ -5,11 +5,13 @@ public class petScreen extends JFrame{
     private final JButton backButton;
 
     public petScreen(){
-        super("記帳程式");
+        super("寵物系統");
+        setResizable(false);
+        setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         backButton = new JButton("返回");
-        add(backButton, BorderLayout.AFTER_LAST_LINE);
-        setSize(500,600);
+        backButton.setBounds(0,0,100,80);
+        add(backButton);
     }
 
     public JButton getBackButton(){

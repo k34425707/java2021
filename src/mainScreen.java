@@ -27,12 +27,15 @@ public class mainScreen extends JFrame{
     public mainScreen(){
         super("記帳程式");
         //設定主畫面的大小和出現位置還有排版
+        setResizable(false);
+        ((JPanel)this.getContentPane()).setOpaque(false);
         setSize(798,600);
         Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) screensize.getWidth() / 2 - mainScreen.this.getWidth() / 2;
         int y = (int) screensize.getHeight() / 2 - mainScreen.this.getHeight() / 2;
         setLocation(x,y);
         setLayout(new GridLayout(5,3,0,40));
+        setBackground(Color.blue);
         space = new JLabel("",JLabel.CENTER);
         space2 = new JLabel("",JLabel.CENTER);
         space3 = new JLabel("",JLabel.CENTER);
@@ -68,6 +71,7 @@ public class mainScreen extends JFrame{
         cards.add(searchFrame);
         cards.add(petFrame);
         add(cards);*/
+        //設定其他畫面的大小
         bookkeepingFrame.setSize(mainScreen.this.getSize());
         searchFrame.setSize(mainScreen.this.getSize());
         petFrame.setSize(mainScreen.this.getSize());
