@@ -63,7 +63,7 @@ public class BookOperation
                         while((dataString=br.readLine())!=null)
                         {
                             data=dataString.split(",");
-                            account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]));
+                            account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
                             accountsList.add(account);
                         } 
                         
@@ -94,7 +94,7 @@ public class BookOperation
                     while((dataString=br.readLine())!=null)
                     {
                         data=dataString.split(",");
-                        account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]));
+                        account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
                         accountsList.add(account);
                     }
                 }
@@ -106,4 +106,15 @@ public class BookOperation
         }
         return accountsList;
     }
+    /*public ArrayList<Account> getAccountsFromCsv(int startY,int startM,int startD,int endY,int endM,int endD)//以日為單位查詢帳目
+    {
+        LocalDate startDate=LocalDate.of(startY,startM,startD);
+        LocalDate endDate=LocalDate.of(endY,endM,endD);
+        startDate=startDate.plusDays(-1);
+        endDate=endDate.plusDays(1);
+        if(startY==endY && startM==endM)
+        {
+            csvFile=new File(baseFilePathString+startY+"/book_"+startY+"_"+startM+".csv");
+        }
+    }*/
 }

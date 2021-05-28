@@ -6,8 +6,9 @@ public class Account
     private int moneySum;
     private String type;
     private String description;    
+    private boolean isExpenditure;//if為支出，則為true
     
-    public Account(int year,int month,int date,String type,String des,int moneySum)
+    public Account(int year,int month,int date,String type,String des,int moneySum,boolean isExpenditure )
     {
         this.year=year;
         this.month=month;
@@ -15,6 +16,7 @@ public class Account
         this.moneySum=moneySum;
         this.type=type;
         this.description=des;
+        this.isExpenditure=isExpenditure;
     }
     
     public void setYear(int y){
@@ -41,6 +43,10 @@ public class Account
         this.description=des;
     }
 
+    public  void setIsExpenditure(boolean ex){
+        this.isExpenditure=ex;
+    }
+
     public int getYear(){
         return this.year;
     }
@@ -61,9 +67,12 @@ public class Account
     public String getDescription() {
         return this.description;
     }
+    public boolean getIsExpenditure(){
+        return  this.isExpenditure;
+    }
 
     public String formatCsvString()
     {
-        return String.format(getYear()+","+getMonth()+","+getDate()+","+getType()+","+getDescription()+","+getMoneySum());
+        return String.format(getYear()+","+getMonth()+","+getDate()+","+getType()+","+getDescription()+","+getMoneySum()+","+getIsExpenditure());
     }
 }
