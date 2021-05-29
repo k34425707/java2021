@@ -12,23 +12,20 @@ public class BookOperation
     ArrayList<Account> accountsList=new ArrayList<>();//查詢帳款時使用的回傳list
     Account account;//add進accountsList的物件
     private String baseFilePathString="bookData/book_";
-    private String directoryPath;//目錄路徑
-    private String csvFileName;//檔案路徑
-    private File directory;//
+    private String csvFilePath;//檔案路徑
+    private File directory;
     private File csvFile;
     String dataString;//讀取csv檔的每一行儲存點
     String[] data;//將dataString的資料以逗號分開
     public void addAccountsIntoCsvFile(Account account)
     {
         BufferedWriter bw;
-        directoryPath=String.format(baseFilePathString+account.getYear());
-        csvFileName=String.format(directoryPath+"/book_"+account.getYear()+"_"+account.getMonth()+".csv");
+        csvFilePath=String.format(baseFilePathString+account.getYear()+"/book_"+account.getYear()+"_"+account.getMonth()+".csv");
         try{
-            directory=new File(directoryPath);
-            csvFile=new File(csvFileName);
-            if(!directory.exists())
+            csvFile=new File(csvFilePath);
+            if(!csvFile.getParentFile().exists())
             {
-                directory.mkdirs();
+                csvFile.getParentFile().mkdirs();
             }
             if(!csvFile.exists())
             {
@@ -49,8 +46,7 @@ public class BookOperation
     {
         for(int i=startY;i<=endY;i++)
         {
-            directoryPath=String.format(baseFilePathString+i);
-            directory=new File(directoryPath);
+            directory=new File(baseFilePathString+i);
             File[] fileList;
             if(directory.exists())
             {
@@ -63,7 +59,7 @@ public class BookOperation
                         while((dataString=br.readLine())!=null)
                         {
                             data=dataString.split(",");
-                            account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
+                            account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6])); 
                             accountsList.add(account);
                         } 
                         
@@ -83,17 +79,18 @@ public class BookOperation
         LocalDate end=LocalDate.of(endY,endM,20);
         while(end.isAfter(current))
         {
-            csvFileName=String.format(baseFilePathString+current.getYear()+"/book_"+current.getYear()+"_"+current.getMonthValue()+".csv");
+            csvFilePath=String.format(baseFilePathString+current.getYear()+"/book_"+current.getYear()+"_"+current.getMonthValue()+".csv");
             current=current.plusMonths(1);
             try
             {
-                csvFile=new File(csvFileName);
+                csvFile=new File(csvFilePath);
                 if(csvFile.exists())
                 {
                     BufferedReader br=new BufferedReader(new FileReader(csvFile));
                     while((dataString=br.readLine())!=null)
                     {
                         data=dataString.split(",");
+                        System.out.println(csvFilePath);
                         account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
                         accountsList.add(account);
                     }

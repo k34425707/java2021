@@ -14,14 +14,14 @@ public class test1 {
         Account list;
         File x=new File("bookData/book_2021");
         String[] y=x.list();
-        System.out.println(x.getName());
+        System.out.println(LocalDate.now().toString());
         for(String t:y)
         {
             System.out.println(t);
         }
         list=new Account(2021,3,20,"飲食","測試4",45,true);
         bo.addAccountsIntoCsvFile(list);
-        ArrayList<Account> test=bo.getAccountsFromCsv(2021, 3, 2021, 6);;
+        ArrayList<Account> test=bo.getAccountsFromCsv(2021, 3, 2021, 6);
         for(Account i:test)
             System.out.println(i.formatCsvString());
         LocalDate myObj = LocalDate.now(); // Create a date object
