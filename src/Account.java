@@ -1,34 +1,34 @@
+import java.time.LocalDate;
+
 public class Account 
 {
-    private int year;
-    private int month;
-    private int date;
+    private LocalDate date;
     private int moneySum;
     private String type;
     private String description;    
+    private boolean isExpenditure;//if為支出，則為true
     
-    public Account(int year,int month,int date,String type,String des,int moneySum)
+    public Account(String date,String type,String des,int moneySum,boolean isExpenditure )
     {
-        this.year=year;
-        this.month=month;
-        this.date=date;
+        this.date=LocalDate.parse(date);
         this.moneySum=moneySum;
         this.type=type;
         this.description=des;
-    }
-    
-    public void setYear(int y){
-        this.year=y;
+        this.isExpenditure=isExpenditure;
     }
 
-    public void setMonth(int m){
-        this.month=m;
-    }
-
-    public void setDate(int d){
-        this.date=d;
+    public Account(int year,int month,int day,String type,String des,int moneySum,boolean isExpenditure )
+    {
+        this.date=LocalDate.of(year,month,day);
+        this.moneySum=moneySum;
+        this.type=type;
+        this.description=des;
+        this.isExpenditure=isExpenditure;
     }
     
+    public void setdate(LocalDate date){
+        this.date=date;
+    }    
     public void setMoneySum(int MS){
         this.moneySum=MS;
     } 
@@ -41,16 +41,20 @@ public class Account
         this.description=des;
     }
 
+    public  void setIsExpenditure(boolean ex){
+        this.isExpenditure=ex;
+    }
+
     public int getYear(){
-        return this.year;
+        return this.date.getYear();
     }
 
     public int getMonth(){
-        return this.month;
+        return this.date.getMonthValue();
     }
 
-    public int getDate(){
-        return this.date;
+    public int getDay(){
+        return this.date.getDayOfMonth();
     }
     public int getMoneySum() {
         return this.moneySum;
@@ -61,9 +65,12 @@ public class Account
     public String getDescription() {
         return this.description;
     }
+    public boolean getIsExpenditure(){
+        return  this.isExpenditure;
+    }
 
     public String formatCsvString()
     {
-        return String.format(getYear()+","+getMonth()+","+getDate()+","+getType()+","+getDescription()+","+getMoneySum());
+        return String.format(this.getYear()+","+this.getMonth()+","+this.getDay()+","+this.getType()+","+this.getDescription()+","+this.getMoneySum()+","+this.getIsExpenditure());
     }
 }
