@@ -16,7 +16,7 @@ public class BookOperation
     private File directory;
     private File csvFile;
     String dataString;//讀取csv檔的每一行儲存點
-    String[] data;//將dataString的資料以逗號分開
+
     public void addAccountsIntoCsvFile(Account account)
     {
         BufferedWriter bw;
@@ -58,11 +58,8 @@ public class BookOperation
                         BufferedReader br=new BufferedReader(new FileReader(csv));
                         while((dataString=br.readLine())!=null)
                         {
-                            data=dataString.split(",");
-                            account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6])); 
-                            accountsList.add(account);
-                        } 
-                        
+                            accountsList.add(makeAccount(dataString));
+                        }
                     }
                 }
                 catch (IOException e)
@@ -73,45 +70,82 @@ public class BookOperation
         }
         return accountsList;
     }
+
     public ArrayList<Account> getAccountsFromCsv(int startY,int startM,int endY,int endM)//以月為單位查詢帳目
     {
-        LocalDate current=LocalDate.of(startY,startM,2);
+        LocalDate current=LocalDate.of(startY,startM,5);
         LocalDate end=LocalDate.of(endY,endM,20);
         while(end.isAfter(current))
         {
-            csvFilePath=String.format(baseFilePathString+current.getYear()+"/book_"+current.getYear()+"_"+current.getMonthValue()+".csv");
-            current=current.plusMonths(1);
-            try
-            {
-                csvFile=new File(csvFilePath);
-                if(csvFile.exists())
-                {
-                    BufferedReader br=new BufferedReader(new FileReader(csvFile));
-                    while((dataString=br.readLine())!=null)
-                    {
-                        data=dataString.split(",");
-                        System.out.println(csvFilePath);
-                        account=new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
-                        accountsList.add(account);
-                    }
-                }
-            }
-            catch (IOException e)
-            {
-                System.out.println(e);
-            }
+           accountsList.addAll(getTotalAccountsFromAMonth(current.getYear(),current.getMonthValue()));
+           current=current.plusMonths(1);
         }
         return accountsList;
     }
-    /*public ArrayList<Account> getAccountsFromCsv(int startY,int startM,int startD,int endY,int endM,int endD)//以日為單位查詢帳目
+
+
+    public ArrayList<Account> getAccountsFromCsv(int startY,int startM,int startD,int endY,int endM,int endD)//以日為單位查詢帳目
     {
         LocalDate startDate=LocalDate.of(startY,startM,startD);
         LocalDate endDate=LocalDate.of(endY,endM,endD);
-        startDate=startDate.plusDays(-1);
-        endDate=endDate.plusDays(1);
-        if(startY==endY && startM==endM)
+        if(startY==endY && startM==endM)//如果是在一個月內只需要開一個檔案
         {
-            csvFile=new File(baseFilePathString+startY+"/book_"+startY+"_"+startM+".csv");
+           return getSomeOfAccountsFromAMonth(startDate,endDate);
         }
-    }*/
+        else
+        {
+            LocalDate current=LocalDate.of(startY,startM,5).plusMonths(1);
+            accountsList.addAll(getSomeOfAccountsFromAMonth(startDate,startDate.plusMonths(1)));
+            while(current.isBefore(LocalDate.of(endY,endM,1)))
+            {
+                accountsList.addAll(getTotalAccountsFromAMonth(current.getYear(),current.getMonthValue()));
+                current=current.plusMonths(1);
+            }
+            accountsList.addAll(getSomeOfAccountsFromAMonth(LocalDate.of(endY,endM,1),endDate));
+            return accountsList;
+        }
+    }
+    
+    private ArrayList<Account> getTotalAccountsFromAMonth(int year,int month)
+    {
+        ArrayList<Account> tempList=new ArrayList<>();
+        try
+        {
+            csvFile=new File(baseFilePathString+year+"/book_"+year+"_"+month+".csv");
+            if(csvFile.exists())
+            {
+                BufferedReader br=new BufferedReader(new FileReader(csvFile));
+                while((dataString=br.readLine())!=null)
+                {
+                    tempList.add(makeAccount(dataString));
+                }
+                
+            }
+        }
+        catch(IOException e){
+            System.out.println(e);
+        }
+        return tempList;
+    }
+
+    private ArrayList<Account> getSomeOfAccountsFromAMonth(LocalDate start,LocalDate end)
+    {
+        ArrayList<Account> tempList=new ArrayList<>();
+        tempList=this.getTotalAccountsFromAMonth(start.getYear(),start.getMonthValue());
+        for(int i=tempList.size()-1;i>=0;i--)
+        {
+            if(tempList.get(i).getDate().isBefore(start)|| tempList.get(i).getDate().isAfter(end)){
+                tempList.remove(i);
+            }
+        }
+        return tempList;
+    }
+    
+
+    private Account makeAccount(String dataString)
+    {
+        String[] data;//將dataString的資料以逗號分開
+        data=dataString.split(",");
+        return new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
+    }
 }

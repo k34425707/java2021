@@ -21,11 +21,11 @@ public class test1 {
         }
         list=new Account(2021,3,20,"飲食","測試4",45,true);
         bo.addAccountsIntoCsvFile(list);
-        ArrayList<Account> test=bo.getAccountsFromCsv(2021, 3, 2021, 6);
+        ArrayList<Account> test=bo.getAccountsFromCsv(2021, 3,20, 2021, 6,19);
         for(Account i:test)
             System.out.println(i.formatCsvString());
         LocalDate myObj = LocalDate.now(); // Create a date object
-        System.out.println(myObj.plusMonths(-1)); // Display the current date
+        System.out.println(myObj.plusMonths(-2)); // Display the current date
         bo.getAccountsFromCsv(2021, 3, 2021, 6);
         PetOperation po=new PetOperation();
     }

@@ -69,6 +69,10 @@ public class Account
         return  this.isExpenditure;
     }
 
+    public LocalDate getDate(){
+        return this.date;
+    }
+
     public String formatCsvString()
     {
         return String.format(this.getYear()+","+this.getMonth()+","+this.getDay()+","+this.getType()+","+this.getDescription()+","+this.getMoneySum()+","+this.getIsExpenditure());

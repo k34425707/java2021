@@ -73,6 +73,12 @@ public class PetDog {
     {
         this.hungerValue-=1;
         this.thirstValue-=1;
+        if(this.hungerValue<0){
+            this.hungerValue=0;
+        }
+        if(this.thirstValue<0){
+            this.thirstValue=0;
+        }
         if(doReviseHP){
             this.reviseHP();
             this.doReviseHP=false;
