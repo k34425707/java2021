@@ -32,7 +32,7 @@ public class petScreen extends JFrame{
         backButton = new JButton("返回");
 
         healthBarPanel = new JPanel();
-        healthBarPanel.setBounds(150,15,200,30);
+        healthBarPanel.setBounds(150,15,200,35);
         healthBar = new JProgressBar(0,100);
         healthBar.setPreferredSize(new Dimension(200,30));
         healthBar.setForeground(Color.red);
@@ -40,11 +40,11 @@ public class petScreen extends JFrame{
         healthBarPanel.add(healthBar);
 
         thirstBarPanel = new JPanel();
-        thirstBarPanel.setBounds(150,60,200,30);
+        thirstBarPanel.setBounds(150,60,200,35);
         thirstBar = new JProgressBar(0,100);
         thirstBar.setPreferredSize(new Dimension(200,30));
         thirstBar.setForeground(Color.blue);
-        thirstBar.setValue(100);
+        thirstBar.setValue(70);
         thirstBarPanel.add(thirstBar);
 
         stateTextArea = new JTextArea();
@@ -52,7 +52,7 @@ public class petScreen extends JFrame{
         stateScrollPane.setBounds(450,100,250,300);
 
         healthLabel = new JLabel("生命值 100/100");
-        thirstLabel = new JLabel("口渴度 100/100");
+        thirstLabel = new JLabel("口渴度 70/100");
         userMoney = new JLabel("目前金錢 $:0");
         healthLabel.setFont(new Font("生命值",Font.BOLD + Font.ITALIC,25));
         thirstLabel.setFont(new Font("口渴值",Font.BOLD + Font.ITALIC,25));
