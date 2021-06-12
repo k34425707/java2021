@@ -105,6 +105,30 @@ public class BookOperation
             return accountsList;
         }
     }
+
+    public void deleteAccount(Account account)//刪除資料
+    {
+        ArrayList<Account> tempList=new ArrayList<>();
+        ArrayList<String> StringList=new ArrayList<>();
+        tempList.addAll(getTotalAccountsFromAMonth(account.getYear(),account.getMonth()));
+        for(Account a:tempList)
+            StringList.add(a.formatCsvString());
+        System.out.println("----------------");
+        System.out.println(StringList.remove(account.formatCsvString()));
+        
+        try
+        {
+            BufferedWriter bw=new BufferedWriter(new FileWriter(baseFilePathString+account.getYear()+"/book_"+account.getYear()+"_"+account.getMonth()+".csv",false));
+            for(String input:StringList)
+            {
+                bw.write(input);
+                bw.newLine();
+            }
+            bw.close();
+        }catch(IOException e){
+            System.out.println(e);
+        }
+    }
     
     private ArrayList<Account> getTotalAccountsFromAMonth(int year,int month)
     {

@@ -21,7 +21,10 @@ public class test1 {
         }
         list=new Account(2021,3,20,"飲食","測試4",45,true);
         bo.addAccountsIntoCsvFile(list);
+        list=new Account(2021,3,20,"飲食","測試4",16,true);
         ArrayList<Account> test=bo.getAccountsFromCsv(2021, 3,20, 2021, 6,19);
+        list=test.get(0);
+        bo.deleteAccount(list);
         for(Account i:test)
             System.out.println(i.formatCsvString());
         LocalDate myObj = LocalDate.now(); // Create a date object
