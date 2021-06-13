@@ -5,27 +5,30 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.lang.Object;
+import java.util.Vector;
 
 public class bookkeepingScreen extends JFrame{
 
     private final JButton backButton;
 
-    private String[][] test = {
-            {"108/08/09","500","gash","支出"},
-            {"108/05/20","187","dinner","支出"},
-            {"108/06/06","100","breakfast","支出"}};
 
     private BookOperation bookOperation = new BookOperation();
 
-    private final String[] COLUME_NAMES = {"日期","金錢","敘述","類型"};
+    private final String[] COLUME_NAMES = {"日期","金錢","敘述","類型","收/支"};
 
     private DefaultTableModel tableModel;
     private int verticalScrollBarMaximumValue;
+    private int selectedRow;
+    private int selectedCol;
     private JTable dataTable;
     private JScrollPane tableWithScrollbar;
+    private String[] selectedData = new String[5];
 
     private final JPanel bookkeepingPanel;
+
+    private final JPanel buttonPanel;
     private final JButton bokkeepingButton;
+    private final JButton deleteButton;
 
     private final JPanel radioButtonPanel;
     private final JPanel radioButtonPanel2;
@@ -54,7 +57,7 @@ public class bookkeepingScreen extends JFrame{
     private final JPanel typeTextPanel;
     private final JLabel typeLabel;
     private final JTextField typeTextField;
-    private final String[] OPTIONS = { "早餐","午餐","晚餐","其他"};
+    private final String[] OPTIONS = { "早餐","午餐","晚餐","房租","交通","薪水","獎金","其他"};
     private final JComboBox typeComboBox;
 
     /*private final JScrollPane recordPane;
@@ -71,7 +74,13 @@ public class bookkeepingScreen extends JFrame{
         backButton = new JButton("返回");
         backButton.setHorizontalAlignment(JButton.LEFT);
         backButton.setOpaque(false);
+
+        buttonPanel = new JPanel();
         bokkeepingButton = new JButton("記帳");
+        deleteButton = new JButton("刪除");
+        buttonPanel.add(bokkeepingButton);
+        buttonPanel.add(deleteButton);
+
         radioButtonPanel = new JPanel(new BorderLayout());
         radioButtonPanel2 = new JPanel();
         radioGroup = new ButtonGroup();
@@ -144,7 +153,7 @@ public class bookkeepingScreen extends JFrame{
         typePanel = new JPanel(new GridLayout(2,1));
         typeTextPanel = new JPanel(new BorderLayout());
         typeLabel = new JLabel("敘述");
-        typeTextField = new JTextField("請輸入敘述");
+        typeTextField = new JTextField("無");
         typeLabel.setPreferredSize(new Dimension(50,200));
         //typeLabel.setFont(new Font());
         typeTextPanel.add(typeLabel,BorderLayout.WEST);
@@ -155,7 +164,25 @@ public class bookkeepingScreen extends JFrame{
 
         dataTable = new JTable(new DefaultTableModel(COLUME_NAMES,0));
         tableModel = (DefaultTableModel) dataTable.getModel();
-        dataTable.setEnabled(false);
+        dataTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //當選取Table的資料時，紀錄所選的資料。
+        dataTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                selectedRow = dataTable.getSelectedRow();
+                selectedCol = dataTable.getSelectedColumn();
+                System.out.println("The selected row is : " + selectedRow);
+                System.out.println("The selected col is : " + selectedCol);
+                System.out.println("The data is :" + tableModel.getDataVector().elementAt(selectedRow));
+                Vector vectorData = tableModel.getDataVector().elementAt(selectedRow);
+                for(int i=0;i<vectorData.size();i++)
+                {
+                    selectedData[i] = (String) vectorData.elementAt(i);
+                }
+            }
+        });
+        //dataTable.setEnabled(false);
         tableWithScrollbar = new JScrollPane(dataTable);
         //當資料更新時，scorllBar會自動滾到最新的資料
         verticalScrollBarMaximumValue = tableWithScrollbar.getVerticalScrollBar().getMaximum();
@@ -174,11 +201,14 @@ public class bookkeepingScreen extends JFrame{
         bookkeepingPanel.add(datePanel);
         bookkeepingPanel.add(moneyPanel);
         bookkeepingPanel.add(typePanel);
-        bookkeepingPanel.add(bokkeepingButton);
+        bookkeepingPanel.add(buttonPanel);
 
         add(bookkeepingPanel);
         add(tableWithScrollbar);
-        bokkeepingButton.addActionListener(new ButtonHandler());
+
+        ButtonHandler buttonHandler = new ButtonHandler();
+        bokkeepingButton.addActionListener(buttonHandler);
+        deleteButton.addActionListener(buttonHandler);
     }
 
     public JButton getBackButton(){
@@ -192,36 +222,68 @@ public class bookkeepingScreen extends JFrame{
         {
             if(event.getSource() == bokkeepingButton)
             {
-                /*recordArea.append(String.format("%s %s %s%n",dateTextField.getText(),moneyTextField.getText(),typeTextField.getText()));
-                recordArea.setCaretPosition(recordArea.getDocument().getLength());*/
 
-                //寫入帳本
                 try {
+                    //寫入帳本
                     Account temp = new Account(selectedYear, selectedMonth, selectedDate, (String) typeComboBox.getSelectedItem(), typeTextField.getText(), Integer.parseInt(moneyTextField.getText()), true);
                     if (outNumber.isSelected())
                         temp.setIsExpenditure(true);
                     else
                         temp.setIsExpenditure(false);
                     bookOperation.addAccountsIntoCsvFile(temp);
+                    //在JTable中顯示出資料
+                    String[] tableData = new String[5];
+                    tableData[0] = String.valueOf(selectedYear) + "/" + String.valueOf(selectedMonth) + "/" + String.valueOf(selectedDate);
+                    tableData[1] = moneyTextField.getText();
+                    tableData[2] = typeTextField.getText();
+                    tableData[3] = (String)typeComboBox.getSelectedItem();
+                    if(outNumber.isSelected())
+                    {
+                        tableData[4] = "支出";
+                    }
+                    else
+                    {
+                        tableData[4] = "收入";
+                    }
+                    tableModel.addRow(tableData);
+                    tableWithScrollbar.scrollRectToVisible(dataTable.getCellRect(dataTable.getRowCount(),dataTable.getColumnCount(),true));
                 } catch (NumberFormatException err)
                 {
-                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"金錢應輸入數字","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"金錢應輸入整數!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                }
+                catch (Exception e)
+                {
+                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"出現了不知名的錯誤","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                 }
                 //System.out.println(temp.formatCsvString());
 
-                //在JTable中顯示出資料
-                String[] tableData = new String[4];
-                tableData[0] = String.valueOf(selectedYear) + "/" + String.valueOf(selectedMonth) + "/" + String.valueOf(selectedDate);
-                tableData[1] = moneyTextField.getText();
-                tableData[2] = typeTextField.getText();
-                tableData[3] = (String)typeComboBox.getSelectedItem();
-                tableModel.addRow(tableData);
-                tableWithScrollbar.scrollRectToVisible(dataTable.getCellRect(dataTable.getRowCount(),dataTable.getColumnCount(),true));
-
             }
+            else if(event.getSource() == deleteButton)
+            {
+                tableModel.removeRow(selectedRow);
+                Account deleteAccount = getSelectedData(selectedData);
+                bookOperation.deleteAccount(deleteAccount);
+            }
+        }
+
+        public Account getSelectedData(String[] data)
+        {
+            String[] Day = data[0].split("/");
+            int year = Integer.parseInt(Day[0]);
+            int month = Integer.parseInt(Day[1]);
+            int date = Integer.parseInt(Day[2]);
+            boolean status;
+            if(data[4].equals("收入"))
+                status = false;
+            else
+                status = true;
+            Account tmp = new Account(year,month,date,data[3],data[2],Integer.parseInt(moneyTextField.getText()),status);
+            System.out.println("The selected data account: \n" + tmp.formatCsvString());
+            return tmp;
         }
     }
 
+    //處理日期選單的處理器
     private class comboBoxHandler implements ItemListener
     {
         @Override
@@ -232,22 +294,27 @@ public class bookkeepingScreen extends JFrame{
                 getSelectTime();
                 Calendar tmp = Calendar.getInstance();
                 tmp.set(selectedYear,selectedMonth - 1,1);
-                
+
                 /* for the debug
                 System.out.println(tmp.getTime());
                 System.out.println(tmp.getActualMaximum(Calendar.DAY_OF_MONTH));
                 System.out.println(dateComboBox.getItemCount());*/
 
+                int currentDate = dateComboBox.getSelectedIndex() + 1;
                 //設定日期月份的天數(因為每月的天數會不同，或有閏年問題)
+                //月份日子比目前小的
                 if(dateComboBox.getItemCount() > tmp.getActualMaximum(Calendar.DAY_OF_MONTH))
                 {
-                    dateComboBox.setSelectedIndex(0);
-                    for(int i = dateComboBox.getItemCount() - 1;i>=tmp.getActualMaximum(Calendar.DAY_OF_MONTH);i--)
+                    //目的月份的天數
+                    int dstDate = tmp.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    if(currentDate > dstDate)
+                    dateComboBox.setSelectedIndex(dstDate - 1);
+                    for(int i = dateComboBox.getItemCount() - 1;i>=dstDate;i--)
                         dateComboBox.removeItemAt(i);
                 }
+                //月份日子比目前大的
                 else if(dateComboBox.getItemCount() < tmp.getActualMaximum(Calendar.DAY_OF_MONTH))
                 {
-                    dateComboBox.setSelectedIndex(0);
                     int addDate = dateComboBox.getItemCount();
                     int times = tmp.getActualMaximum(Calendar.DAY_OF_MONTH) - dateComboBox.getItemCount();
                     for(int i = 0;i < times;i++)
