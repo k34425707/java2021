@@ -25,14 +25,18 @@ public class searchScreen extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //初始化各個元件
         backButton = new JButton("返回");
+
         startDateTextField = new JTextField("請輸入開始年月日(例108/05/26)");
         endDateTextField = new JTextField("請輸入結束年月日(例108/12/23)");
+
         label1 = new JLabel("  ~  ");
         totalExpenditureLabel = new JLabel("總支出:");
         totalIncomeLabel = new JLabel("總收入: ");
+
         searchYearButton = new JButton("年資料查詢");
         searchMonthButton = new JButton("月資料查詢");
         searchTargetTimeButton = new JButton("查詢資料");
+
         showInfoTextArea = new JTextArea("");
         showInfoScrollPane = new JScrollPane(showInfoTextArea);
         //設定字體
