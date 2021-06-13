@@ -42,7 +42,7 @@ public class BookOperation
         }
     }
 
-    public ArrayList<Account> getAccountsFromCsv(int startY,int endY)//以年為單位查詢帳目
+    public String[][] getAccountsFromCsv(int startY,int endY)//以年為單位查詢帳目
     {
         for(int i=startY;i<=endY;i++)
         {
@@ -68,10 +68,10 @@ public class BookOperation
                 }
             }
         }
-        return accountsList;
+        return makeTableString(accountsList);
     }
 
-    public ArrayList<Account> getAccountsFromCsv(int startY,int startM,int endY,int endM)//以月為單位查詢帳目
+    public String[][] getAccountsFromCsv(int startY,int startM,int endY,int endM)//以月為單位查詢帳目
     {
         LocalDate current=LocalDate.of(startY,startM,5);
         LocalDate end=LocalDate.of(endY,endM,20);
@@ -80,17 +80,17 @@ public class BookOperation
            accountsList.addAll(getTotalAccountsFromAMonth(current.getYear(),current.getMonthValue()));
            current=current.plusMonths(1);
         }
-        return accountsList;
+        return makeTableString(accountsList);
     }
 
 
-    public ArrayList<Account> getAccountsFromCsv(int startY,int startM,int startD,int endY,int endM,int endD)//以日為單位查詢帳目
+    public String[][] getAccountsFromCsv(int startY,int startM,int startD,int endY,int endM,int endD)//以日為單位查詢帳目
     {
         LocalDate startDate=LocalDate.of(startY,startM,startD);
         LocalDate endDate=LocalDate.of(endY,endM,endD);
         if(startY==endY && startM==endM)//如果是在一個月內只需要開一個檔案
         {
-           return getSomeOfAccountsFromAMonth(startDate,endDate);
+           accountsList=getSomeOfAccountsFromAMonth(startDate,endDate);
         }
         else
         {
@@ -102,8 +102,8 @@ public class BookOperation
                 current=current.plusMonths(1);
             }
             accountsList.addAll(getSomeOfAccountsFromAMonth(LocalDate.of(endY,endM,1),endDate));
-            return accountsList;
         }
+        return makeTableString(accountsList);
     }
 
     public void deleteAccount(Account account)//刪除資料
@@ -171,5 +171,28 @@ public class BookOperation
         String[] data;//將dataString的資料以逗號分開
         data=dataString.split(",");
         return new Account(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),data[3],data[4],Integer.parseInt(data[5]),Boolean.parseBoolean(data[6]));
+    }
+
+    private String[][] makeTableString(ArrayList<Account> list)
+    {
+        String[][] accountsString=new String[list.size()][];
+        for(int i=0;i<list.size();i++)
+        {
+            String[] account=new String[5];
+            account[0]=list.get(i).getDate().toString();
+            account[1]=Integer.toString(list.get(i).getMoneySum());
+            account[2]=list.get(i).getDescription();
+            account[3]=list.get(i).getType();
+            if(list.get(i).getIsExpenditure())
+            {
+                account[4]="支出";
+            }
+            else
+            {
+                account[4]="收入";
+            }
+            accountsString[i]=account;
+        }
+        return accountsString;
     }
 }
