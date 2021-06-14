@@ -1,12 +1,14 @@
 import javax.swing.*;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Vector;
 
 public class searchScreen extends JFrame{
     private final JButton backButton;
@@ -44,6 +46,7 @@ public class searchScreen extends JFrame{
     private final JLabel totalIncomeLabel;
 
     private buttonHandler buttonHandle = new buttonHandler();
+    private final JButton deleteButton;
     private final JButton searchYearButton;
     private final JButton searchMonthButton;
     private final JButton searchTargetTimeButton;
@@ -51,7 +54,13 @@ public class searchScreen extends JFrame{
     private String[][] data = {};
     private int totalExpenditure = 0;
     private int totalIncome = 0;
+    private int selectedRow;
+    private int selectedCol;
+    private String[] selectedData = new String[5];
     private JTable showInfoTable;
+    private tat test = new tat();
+    //private mouseListen mouseHandler = new mouseListen();
+    private DefaultTableModel tableModel;
     private JScrollPane showInfoScrollPane;
 
     public searchScreen(){
@@ -135,7 +144,16 @@ public class searchScreen extends JFrame{
         searchTargetTimeButton = new JButton("查詢資料");
         searchTargetTimeButton.addActionListener(buttonHandle);
 
-        showInfoTable = new JTable(data,COLUME_NAMES);
+        deleteButton = new JButton("刪除資料");
+        deleteButton.addActionListener(buttonHandle);
+
+        //初始化JTable
+        showInfoTable = new JTable(new DefaultTableModel(data,COLUME_NAMES));
+        tableModel = (DefaultTableModel) showInfoTable.getModel();
+        showInfoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        showInfoTable.setDefaultEditor(Object.class, null);
+        showInfoTable.getSelectionModel().addListSelectionListener(test);
+
         showInfoScrollPane = new JScrollPane(showInfoTable);
         //設定字體
         label1.setFont(new Font("~",Font.BOLD,30));
@@ -150,13 +168,13 @@ public class searchScreen extends JFrame{
         comboBoxPanel2.setBounds(492,50,180,80);//602 //// 550 200
         label2.setBounds(comboBoxPanel.getX() + 50,comboBoxPanel.getY() - 35,100,30);
         label3.setBounds(comboBoxPanel2.getX() + 50,comboBoxPanel2.getY() - 35,100,30);
+        deleteButton.setBounds(0,150,100,80);
         searchYearButton.setBounds(481,150,100,80);
         searchMonthButton.setBounds(581,150,100,80);
         searchTargetTimeButton.setBounds(681,150,100,80);
         showInfoScrollPane.setBounds(0,230,783,200);
         totalExpenditureLabel.setBounds(0,435,783,60);
         totalIncomeLabel.setBounds(0,495,783,65);
-        //System.out.println(searchYearButton.getSize());
         //加到畫面上
         add(backButton);
         add(comboBoxPanel);
@@ -164,6 +182,7 @@ public class searchScreen extends JFrame{
         add(label2);
         add(label3);
         add(comboBoxPanel2);
+        add(deleteButton);
         add(searchYearButton);
         add(searchMonthButton);
         add(searchTargetTimeButton);
@@ -186,11 +205,16 @@ public class searchScreen extends JFrame{
 
     private void fillData(String[][] data) {
         System.out.println("enter fillData");
-        showInfoTable = new JTable(data, COLUME_NAMES);
+
+        //更新TABLE資料
+        tableModel.setRowCount(0);
+        for(int i=0;i< data.length;i++)
+        {
+            tableModel.addRow(data[i]);
+        }
         showInfoScrollPane = new JScrollPane(showInfoTable);
         showInfoScrollPane.setBounds(0,230,783,200);
         add(showInfoScrollPane);
-        showInfoTable.setEnabled(false);
     }
 
     //計算總收入和支出
@@ -213,6 +237,25 @@ public class searchScreen extends JFrame{
         totalExpenditureLabel.setText(String.format("總支出: %,d",totalExpenditure));
         totalIncomeLabel.setText(String.format("總收入: %,d",totalIncome));
     }
+    //String money covert to int money
+    public int convertToMoney(String m)
+    {
+        if(m.length() < 4)
+        {
+            return Integer.parseInt(m);
+        }
+        else
+        {
+            String[] str = m.split(",");
+            String money = new String();
+            for(int i=0;i<str.length;i++)
+            {
+                money += str[i];
+            }
+            System.out.println("The money: " + money);
+            return Integer.parseInt(money);
+        }
+    }
 
 
     private class buttonHandler implements ActionListener
@@ -229,6 +272,7 @@ public class searchScreen extends JFrame{
                     System.out.println("Year wrong!!");
                 }
                 else {
+                    showInfoTable.getSelectionModel().clearSelection();
                     bookOperation = new BookOperation();
                     data = bookOperation.getAccountsFromCsv(selectedYear,selectedYear2);
                     computeMoney(data);
@@ -249,6 +293,7 @@ public class searchScreen extends JFrame{
                     System.out.println("Month wrong!! Same Year");
                 }
                 else {
+                    showInfoTable.getSelectionModel().clearSelection();
                     bookOperation = new BookOperation();
                     data = bookOperation.getAccountsFromCsv(selectedYear,selectedMonth,selectedYear2,selectedMonth2);
                     computeMoney(data);
@@ -274,13 +319,56 @@ public class searchScreen extends JFrame{
                     System.out.println("Date wrong!! Same year different Date!");
                 }
                 else {
+                    showInfoTable.getSelectionModel().clearSelection();
                     bookOperation = new BookOperation();
                     data = bookOperation.getAccountsFromCsv(selectedYear,selectedMonth,selectedDate,selectedYear2,selectedMonth2,selectedDate2);
                     computeMoney(data);
                     updateTable(data);
                 }
             }
+            else if(event.getSource() == deleteButton)
+            {
+                try {
+                    if(showInfoTable.getSelectionModel().isSelectionEmpty())
+                    {
+                        JOptionPane.showMessageDialog(searchScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    }
+                    else {
+                        Account deleteAccount = getSelectedData(selectedData);
+                        bookOperation.deleteAccount(deleteAccount);
+                        tableModel.removeRow(selectedRow);
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.out.println("刪除發生錯誤\n" + e);
+                }
+            }
         }
+
+        public Account getSelectedData(String[] data)
+        {
+            String[] Day = data[0].split("-");
+            int year = Integer.parseInt(Day[0]);
+            int month = Integer.parseInt(Day[1]);
+            int date = Integer.parseInt(Day[2]);
+            int money = convertToMoney(data[1]);
+            boolean status;
+            if(data[4].equals("收入")) {
+                status = false;
+                totalIncome -= money;
+                totalIncomeLabel.setText(String.format("總收入: %,d",totalIncome));
+            }
+            else {
+                status = true;
+                totalExpenditure -= money;
+                totalExpenditureLabel.setText(String.format("總支出: %,d",totalExpenditure));
+            }
+            Account tmp = new Account(year,month,date,data[3],data[2],money,status);
+            System.out.println("The selected data account: \n" + tmp.formatCsvString());
+            return tmp;
+        }
+
 
     }
 
@@ -375,6 +463,30 @@ public class searchScreen extends JFrame{
             selectedMonth = Integer.parseInt(MONTH[startMonthComboBox.getSelectedIndex()]);
             selectedYear2 = Integer.parseInt(YEAR[endYearComboBox.getSelectedIndex()]);
             selectedMonth2 = Integer.parseInt(MONTH[endMonthComboBox.getSelectedIndex()]);
+        }
+    }
+
+    private class tat implements ListSelectionListener
+    {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+
+            try {
+                selectedRow = showInfoTable.getSelectedRow();
+                selectedCol = showInfoTable.getSelectedColumn();
+
+                /*System.out.println("The selected row is : " + selectedRow);
+                System.out.println("The selected col is : " + selectedCol);*/
+                System.out.println("The data is :" + tableModel.getDataVector().elementAt(selectedRow));
+                Vector vectorData = tableModel.getDataVector().elementAt(selectedRow);
+                for (int i = 0; i < vectorData.size(); i++) {
+                    selectedData[i] = (String) vectorData.elementAt(i);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.out.println("清除所選的東西!!\n");
+            }
         }
     }
 

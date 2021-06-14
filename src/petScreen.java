@@ -4,23 +4,29 @@ import java.util.ArrayList;
 
 public class petScreen extends JFrame{
     private final JButton backButton;
+
     private final JPanel healthBarPanel;
     private final JProgressBar healthBar;
     private final JPanel thirstBarPanel;
     private final JProgressBar thirstBar;
     private int health;
     private int thirst;
+
     private final JTextArea stateTextArea;
     private final JScrollPane stateScrollPane;
+
     private final JLabel healthLabel;
     private final JLabel thirstLabel;
     private final JLabel userMoney;
+
     private final JButton useButton;
     private final JButton buyButton;
+
    // private final JScrollPane userListScrollPane;
     private final JScrollPane storeListScrollPane;
     //private final JList userList;
     private final JList storeList;
+
     private ArrayList<String> userBag;
     private String[] commodities = {"水","口罩","食物","狗骨頭"};
 

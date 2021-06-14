@@ -76,8 +76,11 @@ public class bookkeepingScreen extends JFrame{
         backButton.setOpaque(false);
 
         buttonPanel = new JPanel();
+        buttonPanel.setLayout(null);
         bokkeepingButton = new JButton("記帳");
+        bokkeepingButton.setBounds(60,25,100,50);
         deleteButton = new JButton("刪除");
+        deleteButton.setBounds(225,25,100,50);
         buttonPanel.add(bokkeepingButton);
         buttonPanel.add(deleteButton);
 
@@ -164,16 +167,19 @@ public class bookkeepingScreen extends JFrame{
 
         dataTable = new JTable(new DefaultTableModel(COLUME_NAMES,0));
         tableModel = (DefaultTableModel) dataTable.getModel();
-        dataTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //只能選一項資料
+        dataTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //設定成不能更改TABLE內的資料
+        dataTable.setDefaultEditor(Object.class, null);
         //當選取Table的資料時，紀錄所選的資料。
         dataTable.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 super.mouseClicked(e);
                 selectedRow = dataTable.getSelectedRow();
                 selectedCol = dataTable.getSelectedColumn();
-                System.out.println("The selected row is : " + selectedRow);
-                System.out.println("The selected col is : " + selectedCol);
+                /*System.out.println("The selected row is : " + selectedRow);
+                System.out.println("The selected col is : " + selectedCol);*/
                 System.out.println("The data is :" + tableModel.getDataVector().elementAt(selectedRow));
                 Vector vectorData = tableModel.getDataVector().elementAt(selectedRow);
                 for(int i=0;i<vectorData.size();i++)
@@ -255,14 +261,25 @@ public class bookkeepingScreen extends JFrame{
                 {
                     JOptionPane.showMessageDialog(bookkeepingScreen.this,"出現了不知名的錯誤","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                 }
-                //System.out.println(temp.formatCsvString());
 
             }
             else if(event.getSource() == deleteButton)
             {
-                tableModel.removeRow(selectedRow);
-                Account deleteAccount = getSelectedData(selectedData);
-                bookOperation.deleteAccount(deleteAccount);
+                try {
+                    if(dataTable.getSelectionModel().isSelectionEmpty())
+                    {
+                        JOptionPane.showMessageDialog(bookkeepingScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    }
+                    else {
+                        Account deleteAccount = getSelectedData(selectedData);
+                        bookOperation.deleteAccount(deleteAccount);
+                        tableModel.removeRow(selectedRow);
+                    }
+                }
+                catch (Exception e)
+                {
+                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
 
@@ -277,7 +294,7 @@ public class bookkeepingScreen extends JFrame{
                 status = false;
             else
                 status = true;
-            Account tmp = new Account(year,month,date,data[3],data[2],Integer.parseInt(moneyTextField.getText()),status);
+            Account tmp = new Account(year,month,date,data[3],data[2],Integer.parseInt(data[1]),status);
             System.out.println("The selected data account: \n" + tmp.formatCsvString());
             return tmp;
         }

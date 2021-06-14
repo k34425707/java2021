@@ -18,12 +18,15 @@ public class mainScreen extends JFrame{
     private JLabel space10;
     private JLabel space11;
     private JLabel space12;
+    //另外三個介面
     private final bookkeepingScreen bookkeepingFrame = new bookkeepingScreen();
     private final searchScreen searchFrame = new searchScreen();
     private final petScreen petFrame = new petScreen();
+    //主畫面的三個按鈕
     private final JButton bookkeepingButton;
     private final JButton searchButton;
     private final JButton petButton;
+
     public mainScreen(){
         super("記帳程式");
         //設定主畫面的大小和出現位置還有排版
@@ -66,11 +69,6 @@ public class mainScreen extends JFrame{
         add(petButton);
         add(space9);
         add(space10);
-        /*cards = new JPanel(new CardLayout());
-        cards.add(bookkeepingFrame);
-        cards.add(searchFrame);
-        cards.add(petFrame);
-        add(cards);*/
         //設定其他畫面的大小
         bookkeepingFrame.setSize(mainScreen.this.getSize());
         searchFrame.setSize(mainScreen.this.getSize());
