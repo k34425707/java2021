@@ -8,8 +8,9 @@ public class PetDog {
     private boolean isHunger;
     private boolean isThirst;
     private boolean doReviseHP;
-
-    public PetDog(int HP,int hungerValue,int thirstValue,String lastTime,boolean doReviseHP,boolean isHunger,boolean isThirst)
+    private boolean wearMask;//true為有戴
+    private Decoration decoration;
+    public PetDog(int HP,int hungerValue,int thirstValue,String lastTime,boolean doReviseHP,boolean isHunger,boolean isThirst,boolean wearMask,Decoration decoration)
     {
         this.HP=HP;
         this.hungerValue=hungerValue;
@@ -18,6 +19,8 @@ public class PetDog {
         this.isThirst=isThirst; 
         this.doReviseHP=doReviseHP;
         this.lastUpdateTime=LocalDateTime.parse(lastTime);
+        this.wearMask=wearMask;
+        this.decoration=decoration;
         updatePetStatus();
     }
     
@@ -45,6 +48,10 @@ public class PetDog {
         this.isThirst=isThirst;
     }
 
+    public void setDecoration(Decoration decoration){
+        this.decoration=decoration;
+    }
+
     public int getHP(){
         return this.HP;
     }
@@ -67,6 +74,18 @@ public class PetDog {
 
     public boolean getIsThirst(){
         return this.isThirst;
+    }
+
+    public Decoration getDecoration(){
+        return this.decoration;
+    }
+
+    public void increaseHungerValue(int input){
+        this.hungerValue+=input;
+    }
+
+    public void increaseThistValue(int input){
+        this.thirstValue+=input;
     }
     
     public void decreaseHungerAndThirstValue()//每隔15分鐘呼叫一次扣減飢渴值
@@ -139,6 +158,6 @@ public class PetDog {
         }
     }
     public String formatCsvString(){
-        return String.format(this.HP+","+this.hungerValue+","+this.thirstValue+","+this.lastUpdateTime.toString()+","+this.isHunger+","+this.isThirst+","+this.doReviseHP);
+        return String.format(this.HP+","+this.hungerValue+","+this.thirstValue+","+this.lastUpdateTime.toString()+","+this.isHunger+","+this.isThirst+","+this.doReviseHP+","+this.wearMask+","+this.decoration);
     }
 }

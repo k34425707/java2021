@@ -9,8 +9,7 @@ import java.util.ArrayList;
 
 public class BookOperation 
 {
-    ArrayList<Account> accountsList=new ArrayList<>();//查詢帳款時使用的回傳list
-    Account account;//add進accountsList的物件
+    ArrayList<Account> accountsList=new ArrayList<>();//查詢帳款時使用的暫存list
     private String baseFilePathString="bookData/book_";
     private String csvFilePath;//檔案路徑
     private File directory;

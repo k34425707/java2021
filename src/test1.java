@@ -20,7 +20,7 @@ public class test1 {
             System.out.println(t);
         }
         list=new Account(2021,3,20,"飲食","測試4",45,true);
-        bo.addAccountsIntoCsvFile(list);
+        //bo.addAccountsIntoCsvFile(list);
         list=new Account(2021,3,20,"飲食","測試4",16,true);
         String[][] test=bo.getAccountsFromCsv(2021, 3,20, 2021, 6,20);
         bo.deleteAccount(list);
@@ -30,5 +30,6 @@ public class test1 {
         System.out.println(myObj.plusMonths(-2)); // Display the current date
         bo.getAccountsFromCsv(2021, 3, 2021, 6);
         PetOperation po=new PetOperation();
+        System.out.println(PetOperation.myDog.formatCsvString());
     }
 }
