@@ -10,6 +10,7 @@ public class PetDog {
     private boolean doReviseHP;
     private boolean wearMask;//true為有戴
     private Decoration decoration;
+    private boolean canUseMedicine;
     public PetDog(int HP,int hungerValue,int thirstValue,String lastTime,boolean doReviseHP,boolean isHunger,boolean isThirst,boolean wearMask,Decoration decoration)
     {
         this.HP=HP;
@@ -80,12 +81,16 @@ public class PetDog {
         return this.decoration;
     }
 
-    public void increaseHungerValue(int input){
-        this.hungerValue+=input;
+    public void eatFood(int input){
+        this.hungerValue+=input*10;
     }
 
-    public void increaseThistValue(int input){
-        this.thirstValue+=input;
+    public void drinkWater(int input){
+        this.thirstValue+=input*10;
+    }
+    
+    public void useMedicine(int input){
+
     }
     
     public void decreaseHungerAndThirstValue()//每隔15分鐘呼叫一次扣減飢渴值
