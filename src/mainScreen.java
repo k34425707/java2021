@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class mainScreen extends JFrame{
+public class MainScreen extends JFrame{
     //private final JLabel screenTitle;
     //private final JPanel cards;
     private JLabel space;
@@ -19,23 +19,23 @@ public class mainScreen extends JFrame{
     private JLabel space11;
     private JLabel space12;
     //另外三個介面
-    private final bookkeepingScreen bookkeepingFrame = new bookkeepingScreen();
-    private final searchScreen searchFrame = new searchScreen();
-    private final petScreen petFrame = new petScreen();
+    private final BookkeepingScreen bookkeepingFrame = new BookkeepingScreen();
+    private final SearchScreen searchFrame = new SearchScreen();
+    private final PetScreen petFrame = new PetScreen();
     //主畫面的三個按鈕
     private final JButton bookkeepingButton;
     private final JButton searchButton;
     private final JButton petButton;
 
-    public mainScreen(){
+    public MainScreen(){
         super("記帳程式");
         //設定主畫面的大小和出現位置還有排版
         setResizable(false);
         ((JPanel)this.getContentPane()).setOpaque(false);
         setSize(798,600);
         Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) screensize.getWidth() / 2 - mainScreen.this.getWidth() / 2;
-        int y = (int) screensize.getHeight() / 2 - mainScreen.this.getHeight() / 2;
+        int x = (int) screensize.getWidth() / 2 - MainScreen.this.getWidth() / 2;
+        int y = (int) screensize.getHeight() / 2 - MainScreen.this.getHeight() / 2;
         setLocation(x,y);
         setLayout(new GridLayout(5,3,0,40));
         setBackground(Color.blue);
@@ -70,9 +70,9 @@ public class mainScreen extends JFrame{
         add(space9);
         add(space10);
         //設定其他畫面的大小
-        bookkeepingFrame.setSize(mainScreen.this.getSize());
-        searchFrame.setSize(mainScreen.this.getSize());
-        petFrame.setSize(mainScreen.this.getSize());
+        bookkeepingFrame.setSize(MainScreen.this.getSize());
+        searchFrame.setSize(MainScreen.this.getSize());
+        petFrame.setSize(MainScreen.this.getSize());
         //Buttons regist
         ButtonHandler buttonHandler = new ButtonHandler();
         bookkeepingButton.addActionListener(buttonHandler);
@@ -81,44 +81,60 @@ public class mainScreen extends JFrame{
         bookkeepingFrame.getBackButton().addActionListener(buttonHandler);
         searchFrame.getBackButton().addActionListener(buttonHandler);
         petFrame.getBackButton().addActionListener(buttonHandler);
+        bookkeepingFrame.getBokkeepingButton().addActionListener(buttonHandler);
     }
 
+    //按鈕的事件處理器
     private class ButtonHandler implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event)
         {
             if(event.getSource() == bookkeepingButton)
             {
-                bookkeepingFrame.setLocation(mainScreen.this.getX(),mainScreen.this.getY());
+                bookkeepingFrame.setLocation(MainScreen.this.getX(), MainScreen.this.getY());
                 bookkeepingFrame.setVisible(true);
-                mainScreen.this.setVisible(false);
+                MainScreen.this.setVisible(false);
             }
             else if(event.getSource() == searchButton)
             {
-                searchFrame.setLocation(mainScreen.this.getX(),mainScreen.this.getY());
+                searchFrame.setLocation(MainScreen.this.getX(), MainScreen.this.getY());
                 searchFrame.setVisible(true);
-                mainScreen.this.setVisible(false);
+                MainScreen.this.setVisible(false);
             }
             else if(event.getSource() == petButton)
             {
-                petFrame.setLocation(mainScreen.this.getX(),mainScreen.this.getY());
+                petFrame.setLocation(MainScreen.this.getX(), MainScreen.this.getY());
                 petFrame.setVisible(true);
-                mainScreen.this.setVisible(false);
+                MainScreen.this.setVisible(false);
             }
             else if (event.getSource() == bookkeepingFrame.getBackButton())
             {
                 bookkeepingFrame.setVisible(false);
-                mainScreen.this.setVisible(true);
+                MainScreen.this.setVisible(true);
             }
             else if(event.getSource() == searchFrame.getBackButton())
             {
                 searchFrame.setVisible(false);
-                mainScreen.this.setVisible(true);
+                MainScreen.this.setVisible(true);
             }
             else if(event.getSource() == petFrame.getBackButton())
             {
                 petFrame.setVisible(false);
-                mainScreen.this.setVisible(true);
+                MainScreen.this.setVisible(true);
+            }
+            else if(event.getSource() == bookkeepingFrame.getBokkeepingButton())
+            {
+                try {
+                    int m = Integer.parseInt(bookkeepingFrame.getMoneyTextField().getText());
+                    System.out.println("記了一筆帳:" + m);
+                    petFrame.getMyPetDog().myBag.setMoney(petFrame.getMyPetDog().myBag.getMoney() + 50);
+                    petFrame.getUserMoney().setText("目前金錢 $:" + petFrame.getMyPetDog().myBag.getMoney());
+                    petFrame.getMyPetDog().writeBagDataCsv();
+                }
+                catch (NumberFormatException ex)
+                {
+                    System.out.println("記帳失敗!");
+                }
             }
         }
     }

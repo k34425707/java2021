@@ -1,16 +1,14 @@
 import javax.swing.*;
-import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
 
-public class searchScreen extends JFrame{
+public class SearchScreen extends JFrame{
     private final JButton backButton;
     private BookOperation bookOperation = new BookOperation();
 
@@ -59,11 +57,10 @@ public class searchScreen extends JFrame{
     private String[] selectedData = new String[5];
     private JTable showInfoTable;
     private tat test = new tat();
-    //private mouseListen mouseHandler = new mouseListen();
     private DefaultTableModel tableModel;
     private JScrollPane showInfoScrollPane;
 
-    public searchScreen(){
+    public SearchScreen(){
         super("查詢系統");
         //設定視窗和排版
         setResizable(false);
@@ -237,6 +234,7 @@ public class searchScreen extends JFrame{
         totalExpenditureLabel.setText(String.format("總支出: %,d",totalExpenditure));
         totalIncomeLabel.setText(String.format("總收入: %,d",totalIncome));
     }
+
     //String money covert to int money
     public int convertToMoney(String m)
     {
@@ -268,7 +266,7 @@ public class searchScreen extends JFrame{
                 //檢查日期是否可行
                 if(selectedYear > selectedYear2)
                 {
-                    JOptionPane.showMessageDialog(searchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SearchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     System.out.println("Year wrong!!");
                 }
                 else {
@@ -284,12 +282,12 @@ public class searchScreen extends JFrame{
                 //檢查日期是否可行
                 if(selectedYear > selectedYear2)
                 {
-                    JOptionPane.showMessageDialog(searchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SearchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     System.out.println("Month wrong!!");
                 }
                 else if(selectedYear == selectedYear2 && selectedMonth > selectedMonth2)
                 {
-                    JOptionPane.showMessageDialog(searchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SearchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     System.out.println("Month wrong!! Same Year");
                 }
                 else {
@@ -305,17 +303,17 @@ public class searchScreen extends JFrame{
                 //檢查日期是否可行
                 if(selectedYear > selectedYear2)
                 {
-                    JOptionPane.showMessageDialog(searchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SearchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     System.out.println("Date wrong!!");
                 }
                 else if(selectedYear == selectedYear2 && selectedMonth > selectedMonth2)
                 {
-                    JOptionPane.showMessageDialog(searchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SearchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     System.out.println("Date wrong!! Same year");
                 }
                 else if(selectedYear == selectedYear2 && selectedMonth == selectedMonth2 && selectedDate > selectedDate2)
                 {
-                    JOptionPane.showMessageDialog(searchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SearchScreen.this,"目的年月日應比起頭年月日大","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     System.out.println("Date wrong!! Same year different Date!");
                 }
                 else {
@@ -328,14 +326,15 @@ public class searchScreen extends JFrame{
             }
             else if(event.getSource() == deleteButton)
             {
+                //刪除資料
                 try {
                     if(showInfoTable.getSelectionModel().isSelectionEmpty())
                     {
-                        JOptionPane.showMessageDialog(searchScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(SearchScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     }
                     else {
                         Account deleteAccount = getSelectedData(selectedData);
-                        bookOperation.deleteAccount(deleteAccount);
+                        bookOperation.deleteAccount(deleteAccount); //刪除資料
                         tableModel.removeRow(selectedRow);
                     }
                 }
@@ -346,6 +345,7 @@ public class searchScreen extends JFrame{
             }
         }
 
+        //把所選擇的table資料轉成account型態
         public Account getSelectedData(String[] data)
         {
             String[] Day = data[0].split("-");
@@ -354,6 +354,7 @@ public class searchScreen extends JFrame{
             int date = Integer.parseInt(Day[2]);
             int money = convertToMoney(data[1]);
             boolean status;
+            //順便把總收入和總支出的值更改一下
             if(data[4].equals("收入")) {
                 status = false;
                 totalIncome -= money;
@@ -456,6 +457,7 @@ public class searchScreen extends JFrame{
             }
         }
 
+        //取得下拉式選單所選的時間
         public void getSelectTime()
         {
             //紀錄所選的 年/月
@@ -466,6 +468,7 @@ public class searchScreen extends JFrame{
         }
     }
 
+    //當選擇一個table資料時，把那一列的資料記錄下來
     private class tat implements ListSelectionListener
     {
         @Override
@@ -491,7 +494,4 @@ public class searchScreen extends JFrame{
     }
 
 }
-/* for the debug
-                System.out.println(tmp.getTime());
-                System.out.println(tmp.getActualMaximum(Calendar.DAY_OF_MONTH));
-                System.out.println(dateComboBox.getItemCount());*/
+

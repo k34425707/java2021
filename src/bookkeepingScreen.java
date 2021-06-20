@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.lang.Object;
 import java.util.Vector;
 
-public class bookkeepingScreen extends JFrame{
+public class BookkeepingScreen extends JFrame{
 
     private final JButton backButton;
 
@@ -62,7 +62,7 @@ public class bookkeepingScreen extends JFrame{
 
     /*private final JScrollPane recordPane;
     private final JTextArea recordArea;*/
-    public bookkeepingScreen(){
+    public BookkeepingScreen(){
         super("記帳程式");
         //這個Frame的初始設定
         setLayout(new GridLayout(1,2));
@@ -138,7 +138,7 @@ public class bookkeepingScreen extends JFrame{
         datePanel.add(dateComboBox);
 
 
-        moneyPanel = new JPanel(new BorderLayout());
+        moneyPanel = new JPanel(null);
         moneyLabel = new JLabel("金錢$");
         moneyTextField = new JTextField("請輸入金錢");
         moneyTextField.addKeyListener(new KeyAdapter() {
@@ -149,13 +149,16 @@ public class bookkeepingScreen extends JFrame{
                 typeTextField.requestFocus();
             }
         });
-        moneyLabel.setPreferredSize(new Dimension(50,150));
+        moneyLabel.setFont(new Font("l",Font.BOLD,16));
+        moneyLabel.setBounds(0,40,100,50);
+        moneyTextField.setBounds(50,45,341,45);
         moneyPanel.add(moneyLabel,BorderLayout.WEST);
         moneyPanel.add(moneyTextField);
 
         typePanel = new JPanel(new GridLayout(2,1));
         typeTextPanel = new JPanel(new BorderLayout());
         typeLabel = new JLabel("敘述");
+        typeLabel.setFont(new Font("l",Font.BOLD,16));
         typeTextField = new JTextField("無");
         typeLabel.setPreferredSize(new Dimension(50,200));
         //typeLabel.setFont(new Font());
@@ -221,6 +224,11 @@ public class bookkeepingScreen extends JFrame{
         return backButton;
     }
 
+    public JButton getBokkeepingButton() { return bokkeepingButton; }
+
+    public JTextField getMoneyTextField() { return moneyTextField; }
+
+    //按鈕的事件處理器
     private class ButtonHandler implements ActionListener
     {
         @Override
@@ -255,20 +263,21 @@ public class bookkeepingScreen extends JFrame{
                     tableWithScrollbar.scrollRectToVisible(dataTable.getCellRect(dataTable.getRowCount(),dataTable.getColumnCount(),true));
                 } catch (NumberFormatException err)
                 {
-                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"金錢應輸入整數!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(BookkeepingScreen.this,"金錢應輸入整數!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                 }
                 catch (Exception e)
                 {
-                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"出現了不知名的錯誤","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(BookkeepingScreen.this,"出現了不知名的錯誤","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                 }
 
             }
             else if(event.getSource() == deleteButton)
             {
+                //刪除資料
                 try {
                     if(dataTable.getSelectionModel().isSelectionEmpty())
                     {
-                        JOptionPane.showMessageDialog(bookkeepingScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(BookkeepingScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                     }
                     else {
                         Account deleteAccount = getSelectedData(selectedData);
@@ -278,11 +287,12 @@ public class bookkeepingScreen extends JFrame{
                 }
                 catch (Exception e)
                 {
-                    JOptionPane.showMessageDialog(bookkeepingScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(BookkeepingScreen.this,"尚未選取資料!","錯誤訊息",JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
 
+        //把選擇的table資料轉成account
         public Account getSelectedData(String[] data)
         {
             String[] Day = data[0].split("/");
@@ -353,6 +363,7 @@ public class bookkeepingScreen extends JFrame{
             }
         }
 
+        //取得下拉式選單的時間
         public void getSelectTime()
         {
             //紀錄所選的 年/月
