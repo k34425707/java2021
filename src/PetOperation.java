@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PetOperation 
 {
@@ -14,6 +16,8 @@ public class PetOperation
     private BufferedReader br;
     public static PetDog myDog;
     public static Bag myBag;
+    BackgroundCheck BC=new BackgroundCheck(this);
+    ExecutorService executorService=Executors.newCachedThreadPool();
     public PetOperation()//建構函式
     {
         try
@@ -46,13 +50,15 @@ public class PetOperation
             PetOperation.myDog=new PetDog(Integer.parseInt(data[0]),Integer.parseInt(data[1]) , Integer.parseInt(data[2]), data[3] ,Boolean.parseBoolean(data[4]), Boolean.parseBoolean(data[5]), Boolean.parseBoolean(data[6]),Boolean.parseBoolean(data[7]),Decoration.valueOf(data[8]));
             br=new BufferedReader(new FileReader(bag));
             data=br.readLine().split(",");
-            PetOperation.myBag=new Bag(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),Boolean.parseBoolean(data[3]),Boolean.parseBoolean(data[4]),Boolean.parseBoolean(data[5]),Boolean.parseBoolean(data[6]),Boolean.parseBoolean(data[7]));
+            PetOperation.myBag=new Bag(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]),Boolean.parseBoolean(data[3]),Boolean.parseBoolean(data[4]),Boolean.parseBoolean(data[5]),Boolean.parseBoolean(data[6]),Boolean.parseBoolean(data[7]),Integer.parseInt(data[8]));
             //System.out.println(PetOperation.myDog.formatCsvString());
             PetOperation.myDog.updatePetStatus();
             this.writePetDataCsv();
         }catch(IOException e){
             System.out.println(e);
         }
+        executorService.execute(BC);
+        executorService.shutdown();
     }
 
     
@@ -66,6 +72,7 @@ public class PetOperation
             System.out.println(e);
         }
     }
+
     public void writeBagDataCsv()//將背包資料寫入檔案
     {
         try{
