@@ -6,7 +6,11 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PetScreen extends JFrame{
     private final JButton backButton;
@@ -53,6 +57,7 @@ public class PetScreen extends JFrame{
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         //創建照片
         images = new ImageIcon[commodities.length];
         for(int i=0;i<commodities.length;i++)
@@ -64,6 +69,7 @@ public class PetScreen extends JFrame{
         }
 
         myPetDog = new PetOperation();
+
 
         backButton = new JButton("返回");
         backButton.setBounds(0,0,100,80);
@@ -106,6 +112,7 @@ public class PetScreen extends JFrame{
         stateTextArea = new JTextArea();
         stateScrollPane = new JScrollPane(stateTextArea);
         stateScrollPane.setBounds(50,400,650,100);
+        stateTextArea.setEditable(false);
         add(stateScrollPane);
 
         //創建金錢標題
@@ -125,7 +132,7 @@ public class PetScreen extends JFrame{
         useButton.setBounds(50,500,100,50);
         takeOffButton.setBounds(150,500,100,50);
         buyButton.setBounds(450,500,100,50);
-        takeOffButton.setEnabled(false);
+        //takeOffButton.setEnabled(false);
         useButton.setEnabled(false);
         buyButton.setEnabled(false);
         add(takeOffButton);
@@ -165,6 +172,18 @@ public class PetScreen extends JFrame{
         listsTabbedPane.setBounds(495,100,250,300);// 50 400 650 100
         add(listsTabbedPane);
 
+        BackgroundCheck BC=new BackgroundCheck(myPetDog,hungerBar,thirstBar,healthBar,hungerLabel,thirstLabel,healthLabel,pet,stateTextArea);
+        ExecutorService executorService= Executors.newCachedThreadPool();
+        executorService.execute(BC);
+        executorService.shutdown();
+
+        ImageIcon tmp = new ImageIcon("tenor.gif");
+        pet = new JLabel(tmp);
+        pet.setBounds(200,100,250,300);
+        add(pet);
+        pet.addMouseListener(new petMouseListener());
+
+        nowPetStatus();
     }
 
     public JButton getBackButton(){
@@ -227,7 +246,7 @@ public class PetScreen extends JFrame{
                         }
                         else
                         {
-                            if(myPetDog.myBag.getMoney() < 1000)
+                            if(myPetDog.myBag.getMoney() < 800)
                             {
                                 JOptionPane.showMessageDialog(PetScreen.this,"金錢不足!");
                             }
@@ -246,7 +265,7 @@ public class PetScreen extends JFrame{
                         }
                         else
                         {
-                            if(myPetDog.myBag.getMoney() < 1000)
+                            if(myPetDog.myBag.getMoney() < 800)
                             {
                                 JOptionPane.showMessageDialog(PetScreen.this,"金錢不足!");
                             }
@@ -265,7 +284,7 @@ public class PetScreen extends JFrame{
                         }
                         else
                         {
-                            if(myPetDog.myBag.getMoney() < 1000)
+                            if(myPetDog.myBag.getMoney() < 800)
                             {
                                 JOptionPane.showMessageDialog(PetScreen.this,"金錢不足!");
                             }
@@ -284,7 +303,7 @@ public class PetScreen extends JFrame{
                         }
                         else
                         {
-                            if(myPetDog.myBag.getMoney() < 1000)
+                            if(myPetDog.myBag.getMoney() < 800)
                             {
                                 JOptionPane.showMessageDialog(PetScreen.this,"金錢不足!");
                             }
@@ -303,7 +322,7 @@ public class PetScreen extends JFrame{
                         }
                         else
                         {
-                            if(myPetDog.myBag.getMoney() < 1000)
+                            if(myPetDog.myBag.getMoney() < 800)
                             {
                                 JOptionPane.showMessageDialog(PetScreen.this,"金錢不足!");
                             }
@@ -332,11 +351,16 @@ public class PetScreen extends JFrame{
                                 JOptionPane.showMessageDialog(PetScreen.this,"寵物不想再喝水了");
                             }
                             else {
+                                boolean thirsty = myPetDog.myDog.getIsThirst();
                                 myPetDog.myBag.setWarter(myPetDog.myBag.getWater() - 1);
-                                myPetDog.myDog.setThirstValue(myPetDog.myDog.getThirstValue() + 5);
-                                stateTextArea.append(String.format("水使用成功\n水數量:%d\n", myPetDog.myBag.getWater()));
+                                myPetDog.myDog.drinkWater(1);
+                                stateTextArea.append(String.format("給寵物喝水\n水數量:%d\n", myPetDog.myBag.getWater()));
                                 thirstLabel.setText("口渴度 " + myPetDog.myDog.getThirstValue() + "/100");
                                 thirstBar.setValue(myPetDog.myDog.getThirstValue());
+                                if(thirsty && (!myPetDog.myDog.getIsThirst()))
+                                {
+                                    stateTextArea.append("寵物不再口渴了~\n");
+                                }
                             }
                         }
                         else
@@ -351,11 +375,16 @@ public class PetScreen extends JFrame{
                                 JOptionPane.showMessageDialog(PetScreen.this,"寵物吃不下了!");
                             }
                             else {
+                                boolean hunger = myPetDog.myDog.getIsHunger();
                                 myPetDog.myBag.setFood(myPetDog.myBag.getFood() - 1);
-                                myPetDog.myDog.setHungerValue(myPetDog.myDog.getHungerValue() + 5);
-                                stateTextArea.append(String.format("食物使用成功\n食物數量:%d\n", myPetDog.myBag.getFood()));
+                                myPetDog.myDog.eatFood(1);
+                                stateTextArea.append(String.format("餵寵物吃食物\n食物數量:%d\n", myPetDog.myBag.getFood()));
                                 hungerLabel.setText("飢餓度 " + myPetDog.myDog.getHungerValue() + "/100");
                                 hungerBar.setValue(myPetDog.myDog.getHungerValue());
+                                if(hunger && (!myPetDog.myDog.getIsHunger()))
+                                {
+                                    stateTextArea.append("寵物不再肚子餓了~\n");
+                                }
                             }
                         }
                         else
@@ -367,8 +396,8 @@ public class PetScreen extends JFrame{
                         if (myPetDog.myBag.getMedicine() > 0) {
                             if(myPetDog.myDog.getHP() <= 0) {
                                 myPetDog.myBag.setMedicine(myPetDog.myBag.getMedicine() - 1);
-
-                                stateTextArea.append(String.format("復活藥使用成功\n復活藥數量:%d\n", myPetDog.myBag.getMedicine()));
+                                myPetDog.myDog.useMedicine(1);
+                                stateTextArea.append(String.format("復活藥使用成功\n寵物復活了!\n復活藥數量:%d\n", myPetDog.myBag.getMedicine()));
                             }
                             else
                             {
@@ -391,7 +420,12 @@ public class PetScreen extends JFrame{
                                 else
                                 {
                                     myPetDog.myDog.setDecoration(Decoration.bowknot);
+                                    stateTextArea.append("寵物綁了蝴蝶結\n");
                                 }
+                            }
+                            else
+                            {
+                                stateTextArea.append("寵物已綁了蝴蝶結\n");
                             }
                         }
                         else
@@ -411,7 +445,12 @@ public class PetScreen extends JFrame{
                                 else
                                 {
                                     myPetDog.myDog.setDecoration(Decoration.goldChain);
+                                    stateTextArea.append("寵物戴上金項鍊\n");
                                 }
+                            }
+                            else
+                            {
+                                stateTextArea.append("寵物已戴上金項鍊\n");
                             }
                         }
                         else
@@ -431,7 +470,12 @@ public class PetScreen extends JFrame{
                                 else
                                 {
                                     myPetDog.myDog.setDecoration(Decoration.greenScarf);
+                                    stateTextArea.append("寵物戴上綠領巾\n");
                                 }
+                            }
+                            else
+                            {
+                                stateTextArea.append("寵物已戴上綠領巾\n");
                             }
                         }
                         else
@@ -451,7 +495,12 @@ public class PetScreen extends JFrame{
                                 else
                                 {
                                     myPetDog.myDog.setDecoration(Decoration.redScarf);
+                                    stateTextArea.append("寵物戴上紅領巾\n");
                                 }
+                            }
+                            else
+                            {
+                                stateTextArea.append("寵物已戴上紅領巾\n");
                             }
                         }
                         else
@@ -462,7 +511,7 @@ public class PetScreen extends JFrame{
                     case 7:
                         if (myPetDog.myBag.getMask())
                         {
-                            if(myPetDog.myDog.getDecoration() != Decoration.mask)
+                            if(!myPetDog.myDog.getWearMask())
                             {
                                 if(myPetDog.myDog.getHP() <= 200)
                                 {
@@ -470,8 +519,14 @@ public class PetScreen extends JFrame{
                                 }
                                 else
                                 {
-                                    myPetDog.myDog.setDecoration(Decoration.mask);
+                                    myPetDog.myDog.setWearMask(true);
+                                    getPetStatus();
+                                    stateTextArea.append("寵物戴上口罩\n");
                                 }
+                            }
+                            else
+                            {
+                                stateTextArea.append("寵物已戴上口罩\n");
                             }
                         }
                         else
@@ -482,6 +537,21 @@ public class PetScreen extends JFrame{
                 }
                 stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
                 myPetDog.writeBagDataCsv();
+                myPetDog.writePetDataCsv();
+            }
+            else if (event.getSource() == takeOffButton)
+            {
+                if(myPetDog.myDog.getWearMask() || (myPetDog.myDog.getDecoration() != Decoration.nothing))
+                {
+                    myPetDog.myDog.setWearMask(false);
+                    myPetDog.myDog.setDecoration(Decoration.nothing);
+                    stateTextArea.append("已脫掉配件\n");
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(PetScreen.this,"目前未穿戴配件");
+                }
+                stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
                 myPetDog.writePetDataCsv();
             }
         }
@@ -570,6 +640,15 @@ public class PetScreen extends JFrame{
         }
     }
 
+    private class petMouseListener extends MouseAdapter
+    {
+        @Override
+        public void mouseReleased(MouseEvent event)
+        {
+            nowPetStatus();
+        }
+    }
+
     //創建背包
     public void createBag()
     {
@@ -595,4 +674,54 @@ public class PetScreen extends JFrame{
 
     public JLabel getUserMoney() { return userMoney; }
 
+    public void getPetStatus()
+    {
+        String status = new String();
+        if(myPetDog.myDog.getHP() <= 200)
+        {
+            status += "lowPetHp";
+        }
+        else {
+            if (myPetDog.myDog.getIsHunger())
+                status += "true_hunger";
+            else
+                status += "false_";
+            if (myPetDog.myDog.getIsThirst())
+                status += "true_";
+            else
+                status += "false_";
+            status += myPetDog.myDog.getDecoration().name() + "_";
+            status += myPetDog.myDog.getWearMask();
+            System.out.println("寵物狀態:" + status);
+        }
+        //return status;
+    }
+
+    private void changePetGif()
+    {
+        String status = new String();
+    }
+
+    private void nowPetStatus()
+    {
+        if(myPetDog.myDog.getHP() <= 200)
+        {
+            stateTextArea.append("寵物現在狀態很不好:(\n");
+            stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
+        }
+        else {
+            if (myPetDog.myDog.getIsHunger()) {
+                stateTextArea.append("寵物現在肚子餓了:(\n");
+                stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
+            }
+            if (myPetDog.myDog.getIsThirst()) {
+                stateTextArea.append("寵物現在口渴了:(\n");
+                stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
+            }
+            if (!myPetDog.myDog.getIsHunger() && !myPetDog.myDog.getIsThirst()) {
+                stateTextArea.append("寵物現在很開心~\n");
+                stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
+            }
+        }
+    }
 }

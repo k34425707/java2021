@@ -16,8 +16,6 @@ public class PetOperation
     private BufferedReader br;
     public static PetDog myDog;
     public static Bag myBag;
-    BackgroundCheck BC=new BackgroundCheck(this);
-    ExecutorService executorService=Executors.newCachedThreadPool();
     public PetOperation()//建構函式
     {
         try
@@ -57,8 +55,6 @@ public class PetOperation
         }catch(IOException e){
             System.out.println(e);
         }
-        executorService.execute(BC);
-        executorService.shutdown();
     }
 
     

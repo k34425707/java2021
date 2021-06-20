@@ -40,7 +40,7 @@ public class PetDog {
         this.lastUpdateTime=lt;
     }
     public void setDoReviseHP(boolean doReviseHP){
-        this.doReviseHP;
+        this.doReviseHP = doReviseHP;
     }
 
     public void setIsHunger(boolean isHunger){
@@ -53,6 +53,16 @@ public class PetDog {
 
     public void setDecoration(Decoration decoration){
         this.decoration=decoration;
+    }
+
+    public void setWearMask(boolean wearMask)
+    {
+        this.wearMask = wearMask;
+    }
+
+    public boolean getWearMask()
+    {
+        return this.wearMask;
     }
 
     public int getHP(){

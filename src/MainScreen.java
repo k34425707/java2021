@@ -37,7 +37,9 @@ public class MainScreen extends JFrame{
         int x = (int) screensize.getWidth() / 2 - MainScreen.this.getWidth() / 2;
         int y = (int) screensize.getHeight() / 2 - MainScreen.this.getHeight() / 2;
         setLocation(x,y);
-        setLayout(new GridLayout(5,3,0,40));
+        setLayout(null);
+        setBackground(Color.DARK_GRAY);
+        /*setLayout(new GridLayout(5,3,0,40));
         setBackground(Color.blue);
         space = new JLabel("",JLabel.CENTER);
         space2 = new JLabel("",JLabel.CENTER);
@@ -50,13 +52,17 @@ public class MainScreen extends JFrame{
         space9 = new JLabel("",JLabel.CENTER);
         space10 = new JLabel("",JLabel.CENTER);
         space11 = new JLabel("",JLabel.CENTER);
-        space12 = new JLabel("",JLabel.CENTER);
+        space12 = new JLabel("",JLabel.CENTER);*/
         //創建按鈕
         bookkeepingButton = new JButton("記帳");
         searchButton = new JButton("查詢帳本");
         petButton = new JButton("寵物養成");
+        //設定位置
+        bookkeepingButton.setBounds(242,80,300,80);
+        searchButton.setBounds(242,230,300,80);
+        petButton.setBounds(242,380,300,80);
         //設定主畫面
-        add(space);
+        /*add(space);
         add(space2);
         add(space3);
         add(space4);
@@ -68,7 +74,10 @@ public class MainScreen extends JFrame{
         add(space8);
         add(petButton);
         add(space9);
-        add(space10);
+        add(space10);*/
+        add(bookkeepingButton);
+        add(searchButton);
+        add(petButton);
         //設定其他畫面的大小
         bookkeepingFrame.setSize(MainScreen.this.getSize());
         searchFrame.setSize(MainScreen.this.getSize());
