@@ -189,6 +189,6 @@ public class PetDog {
         }
     }
     public String formatCsvString(){
-        return String.format(this.HP+","+this.hungerValue+","+this.thirstValue+","+this.lastUpdateTime.toString()+","+this.isHunger+","+this.isThirst+","+this.doReviseHP+","+this.wearMask+","+this.decoration);
+        return String.format(this.HP+","+this.hungerValue+","+this.thirstValue+","+this.lastUpdateTime.toString()+","+this.doReviseHP+","+this.isHunger+","+this.isThirst+","+this.wearMask+","+this.decoration);
     }
 }
