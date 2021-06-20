@@ -161,6 +161,7 @@ public class PetDog {
 
     public void checkHungerAndThirstStatus()//確認寵物的饑渴狀態
     {
+        
         if((this.hungerValue>80 || this.thirstValue>80))
         {
             if(this.hungerValue<60)
@@ -172,6 +173,11 @@ public class PetDog {
             {
                 this.isHunger=false;
                 this.isThirst=true;
+            }
+            else
+            {
+                this.isHunger=false;
+                this.isThirst=false;
             }
         }
         else
