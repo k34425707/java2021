@@ -39,6 +39,9 @@ public class PetDog {
     public void setLastUpdateTime(LocalDateTime lt){
         this.lastUpdateTime=lt;
     }
+    public void setDoReviseHP(boolean doReviseHP){
+        this.doReviseHP;
+    }
 
     public void setIsHunger(boolean isHunger){
         this.isHunger=isHunger;
@@ -70,6 +73,9 @@ public class PetDog {
 
     public boolean getIsHunger(){
         return this.isHunger;
+    }
+    public boolean getDoReviseHP(){
+        return this.doReviseHP;
     }
 
     public boolean getIsThirst(){
