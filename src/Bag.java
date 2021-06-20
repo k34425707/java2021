@@ -8,8 +8,9 @@ public class Bag
     private boolean greenScarf;
     private boolean redScarf;
     private boolean mask;
+    private int money;
 
-    public Bag(int food,int water ,int medicine ,boolean bowknot,boolean goldChain,boolean greenScarf,boolean redScarf,boolean mask){
+    public Bag(int food,int water ,int medicine ,boolean bowknot,boolean goldChain,boolean greenScarf,boolean redScarf,boolean mask,int money){
         this.food=food;
         this.water=water;
         this.medicine=medicine;
@@ -18,6 +19,7 @@ public class Bag
         this.greenScarf=greenScarf;
         this.redScarf=redScarf;
         this.mask=mask;
+        this.money=money;
     }
 
     void setFood(int food){
@@ -47,6 +49,9 @@ public class Bag
     void setMask(boolean mask){
         this.mask=mask;
     }
+    void setMoney(int money){
+        this.money=money;
+    }
     int getFood(){
         return this.food;
     }
@@ -71,8 +76,11 @@ public class Bag
     boolean getMask(){
         return this.mask;
     }
+    int getMoney(){
+        return this.money;
+    }
     public String formatCsvString()
     {
-        return String.format(this.food+","+this.water+","+this.medicine+","+this.bowknot+","+this.goldChain+","+this.greenScarf+","+this.redScarf+","+this.mask);
+        return String.format(this.food+","+this.water+","+this.medicine+","+this.bowknot+","+this.goldChain+","+this.greenScarf+","+this.redScarf+","+this.mask+","+this.money);
     }
 }

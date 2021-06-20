@@ -20,7 +20,7 @@ public class PetOperation
         {
             if(!petDataCsv.getParentFile().exists())
                 petDataCsv.getParentFile().mkdirs();
-            if(!petDataCsv.exists())
+            if(!petDataCsv.exists())//如果沒有寵物檔案就創建他
             {
                 String now=LocalDateTime.now().toString();
                 petDataCsv.createNewFile();
@@ -29,11 +29,11 @@ public class PetOperation
                 //生命值,饑餓值,口渴度,當前時間,是否飢餓,是否口渴,下次是否調整HP,mask,decoration
                 bw.close();
             }
-            if(!bag.exists())
+            if(!bag.exists())//如果沒有背包檔案就創建他
             {
                 bag.createNewFile();
                 bw=new BufferedWriter(new FileWriter(bag,false));
-                bw.write("0,0,0,false,false,false,false,false");
+                bw.write("0,0,0,false,false,false,false,false,0");
                 bw.close();
             }
             
@@ -70,7 +70,7 @@ public class PetOperation
     {
         try{
             bw=new BufferedWriter(new FileWriter(bag,false));
-            bw.write(PetOperation.myDog.formatCsvString());
+            bw.write(PetOperation.myBag.formatCsvString());
             bw.close();
         }catch(IOException e){
             System.out.println(e);
