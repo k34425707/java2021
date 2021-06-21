@@ -149,6 +149,15 @@ public class BookkeepingScreen extends JFrame{
                 typeTextField.requestFocus();
             }
         });
+        moneyTextField.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                moneyTextField.setText("");
+            }
+
+            public void focusLost(FocusEvent e) {
+                // nothing
+            }
+        });
         moneyLabel.setFont(new Font("l",Font.BOLD,16));
         moneyLabel.setBounds(0,40,100,50);
         moneyTextField.setBounds(50,45,341,45);
@@ -160,6 +169,15 @@ public class BookkeepingScreen extends JFrame{
         typeLabel = new JLabel("敘述");
         typeLabel.setFont(new Font("l",Font.BOLD,16));
         typeTextField = new JTextField("無");
+        typeTextField.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                typeTextField.setText("");
+            }
+
+            public void focusLost(FocusEvent e) {
+                // nothing
+            }
+        });
         typeLabel.setPreferredSize(new Dimension(50,200));
         //typeLabel.setFont(new Font());
         typeTextPanel.add(typeLabel,BorderLayout.WEST);

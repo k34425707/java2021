@@ -1,4 +1,4 @@
 public enum Decoration
 {
-    redScarf,greenScarf,goldChain,bowknot,nothing,mask;
+    redScarf,greenScarf,goldChain,bowknot,nothing;
 }

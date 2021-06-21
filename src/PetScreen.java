@@ -48,6 +48,7 @@ public class PetScreen extends JFrame{
 
     private DefaultListModel bagModel;
     private JList userBagList;
+    private DefaultListModel storeModel;
     private final JList storeList;
 
     private String[] commodities = {"Water","Food","Medicine","Bowknot","Gold chain","Green scarf","Red scarf","Mask"};
@@ -111,7 +112,7 @@ public class PetScreen extends JFrame{
         //創建文字互動視窗
         stateTextArea = new JTextArea();
         stateScrollPane = new JScrollPane(stateTextArea);
-        stateScrollPane.setBounds(50,400,650,100);
+        stateScrollPane.setBounds(50,400,678,100);
         stateTextArea.setEditable(false);
         add(stateScrollPane);
 
@@ -154,8 +155,10 @@ public class PetScreen extends JFrame{
 
         //創建商店List
         storeListHandler storeHandler = new storeListHandler();
-        storeList = new JList(commodities);
+        storeModel = new DefaultListModel();
+        storeList = new JList(storeModel);
         storeList.setCellRenderer(new storeListRenderer());
+        createStore();
         storeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         storeList.setLayoutOrientation(JList.VERTICAL);
         storeList.setVisibleRowCount(-1);
@@ -169,26 +172,30 @@ public class PetScreen extends JFrame{
         listsTabbedPane.addChangeListener(new windowChange());
         listsTabbedPane.addTab("背包",bagScrollPane);
         listsTabbedPane.addTab("商店",storeListScrollPane);
-        listsTabbedPane.setBounds(495,100,250,300);// 50 400 650 100
+        listsTabbedPane.setBounds(475,100,300,300);// 50 400 650 100
         add(listsTabbedPane);
+
+        //ImageIcon tmp = new ImageIcon();
+        pet = new JLabel();
+        changePetGif();
+        pet.setBounds(100,120,350,290);
+        add(pet);
+        pet.addMouseListener(new petMouseListener());
+
+        nowPetStatus();
 
         BackgroundCheck BC=new BackgroundCheck(myPetDog,hungerBar,thirstBar,healthBar,hungerLabel,thirstLabel,healthLabel,pet,stateTextArea);
         ExecutorService executorService= Executors.newCachedThreadPool();
         executorService.execute(BC);
         executorService.shutdown();
 
-        ImageIcon tmp = new ImageIcon("tenor.gif");
-        pet = new JLabel(tmp);
-        pet.setBounds(200,100,250,300);
-        add(pet);
-        pet.addMouseListener(new petMouseListener());
-
-        nowPetStatus();
     }
 
     public JButton getBackButton(){
         return backButton;
     }
+
+    public JLabel getPet() { return pet; }
 
     //按鈕的事件處理器
     private class buttonHandler implements ActionListener {
@@ -351,15 +358,19 @@ public class PetScreen extends JFrame{
                                 JOptionPane.showMessageDialog(PetScreen.this,"寵物不想再喝水了");
                             }
                             else {
-                                boolean thirsty = myPetDog.myDog.getIsThirst();
-                                myPetDog.myBag.setWarter(myPetDog.myBag.getWater() - 1);
-                                myPetDog.myDog.drinkWater(1);
-                                stateTextArea.append(String.format("給寵物喝水\n水數量:%d\n", myPetDog.myBag.getWater()));
-                                thirstLabel.setText("口渴度 " + myPetDog.myDog.getThirstValue() + "/100");
-                                thirstBar.setValue(myPetDog.myDog.getThirstValue());
-                                if(thirsty && (!myPetDog.myDog.getIsThirst()))
+                                if(myPetDog.myDog.getHP()<= 0 )
                                 {
-                                    stateTextArea.append("寵物不再口渴了~\n");
+                                    JOptionPane.showMessageDialog(PetScreen.this,"寵物已升天>:(");
+                                }
+                                else {
+                                    boolean thirsty = myPetDog.myDog.getIsThirst();
+                                    myPetDog.myBag.setWarter(myPetDog.myBag.getWater() - 1);
+                                    myPetDog.myDog.drinkWater(1);
+                                    stateTextArea.append(String.format("給寵物喝水\n水數量:%d\n", myPetDog.myBag.getWater()));
+                                    refreshPetStatusGUI();
+                                    if (thirsty && (!myPetDog.myDog.getIsThirst())) {
+                                        stateTextArea.append("寵物不再口渴了~\n");
+                                    }
                                 }
                             }
                         }
@@ -375,15 +386,19 @@ public class PetScreen extends JFrame{
                                 JOptionPane.showMessageDialog(PetScreen.this,"寵物吃不下了!");
                             }
                             else {
-                                boolean hunger = myPetDog.myDog.getIsHunger();
-                                myPetDog.myBag.setFood(myPetDog.myBag.getFood() - 1);
-                                myPetDog.myDog.eatFood(1);
-                                stateTextArea.append(String.format("餵寵物吃食物\n食物數量:%d\n", myPetDog.myBag.getFood()));
-                                hungerLabel.setText("飢餓度 " + myPetDog.myDog.getHungerValue() + "/100");
-                                hungerBar.setValue(myPetDog.myDog.getHungerValue());
-                                if(hunger && (!myPetDog.myDog.getIsHunger()))
+                                if(myPetDog.myDog.getHP()<= 0 )
                                 {
-                                    stateTextArea.append("寵物不再肚子餓了~\n");
+                                    JOptionPane.showMessageDialog(PetScreen.this,"寵物已升天>:(");
+                                }
+                                else {
+                                    boolean hunger = myPetDog.myDog.getIsHunger();
+                                    myPetDog.myBag.setFood(myPetDog.myBag.getFood() - 1);
+                                    myPetDog.myDog.eatFood(1);
+                                    stateTextArea.append(String.format("餵寵物吃食物\n食物數量:%d\n", myPetDog.myBag.getFood()));
+                                    refreshPetStatusGUI();
+                                    if (hunger && (!myPetDog.myDog.getIsHunger())) {
+                                        stateTextArea.append("寵物不再肚子餓了~\n");
+                                    }
                                 }
                             }
                         }
@@ -397,6 +412,7 @@ public class PetScreen extends JFrame{
                             if(myPetDog.myDog.getHP() <= 0) {
                                 myPetDog.myBag.setMedicine(myPetDog.myBag.getMedicine() - 1);
                                 myPetDog.myDog.useMedicine(1);
+                                refreshPetStatusGUI();
                                 stateTextArea.append(String.format("復活藥使用成功\n寵物復活了!\n復活藥數量:%d\n", myPetDog.myBag.getMedicine()));
                             }
                             else
@@ -520,7 +536,6 @@ public class PetScreen extends JFrame{
                                 else
                                 {
                                     myPetDog.myDog.setWearMask(true);
-                                    getPetStatus();
                                     stateTextArea.append("寵物戴上口罩\n");
                                 }
                             }
@@ -538,21 +553,25 @@ public class PetScreen extends JFrame{
                 stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
                 myPetDog.writeBagDataCsv();
                 myPetDog.writePetDataCsv();
+                changePetGif();
             }
             else if (event.getSource() == takeOffButton)
             {
-                if(myPetDog.myDog.getWearMask() || (myPetDog.myDog.getDecoration() != Decoration.nothing))
+                if(myPetDog.myDog.getHP()<= 0 )
                 {
-                    myPetDog.myDog.setWearMask(false);
-                    myPetDog.myDog.setDecoration(Decoration.nothing);
-                    stateTextArea.append("已脫掉配件\n");
+                    JOptionPane.showMessageDialog(PetScreen.this,"寵物已升天>:(");
+                }else {
+                    if (myPetDog.myDog.getWearMask() || (myPetDog.myDog.getDecoration() != Decoration.nothing)) {
+                        myPetDog.myDog.setWearMask(false);
+                        myPetDog.myDog.setDecoration(Decoration.nothing);
+                        stateTextArea.append("已脫掉配件\n");
+                    } else {
+                        JOptionPane.showMessageDialog(PetScreen.this, "目前未穿戴配件");
+                    }
+                    stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
+                    myPetDog.writePetDataCsv();
+                    changePetGif();
                 }
-                else
-                {
-                    JOptionPane.showMessageDialog(PetScreen.this,"目前未穿戴配件");
-                }
-                stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
-                myPetDog.writePetDataCsv();
             }
         }
     }
@@ -662,10 +681,22 @@ public class PetScreen extends JFrame{
         bagModel.addElement(commodities[7]);
     }
 
+    public void createStore()
+    {
+        storeModel.addElement(commodities[0] + "                $5");
+        storeModel.addElement(commodities[1] + "                   $5");
+        storeModel.addElement(commodities[2] + "           $500");
+        storeModel.addElement(commodities[3] + "           $800");
+        storeModel.addElement(commodities[4] + "        $800");
+        storeModel.addElement(commodities[5] + "     $800");
+        storeModel.addElement(commodities[6] + "         $800");
+        storeModel.addElement(commodities[7] + "                $800");
+    }
+
+
     //創建照片
     private ImageIcon createImageIcon(String path)
     {
-        System.out.println(path);
         ImageIcon tmp = new ImageIcon("pet_Connected_Data/Pictures/" + path);
         return tmp;
     }
@@ -674,37 +705,65 @@ public class PetScreen extends JFrame{
 
     public JLabel getUserMoney() { return userMoney; }
 
-    public void getPetStatus()
+    //取得寵物目前狀態
+    public String getPetStatus()
     {
         String status = new String();
-        if(myPetDog.myDog.getHP() <= 200)
+        if(myPetDog.myDog.getHP() <= 0)
         {
-            status += "lowPetHp";
+            status += "HP_zero";
+        }
+        else if(myPetDog.myDog.getHP() <= 200)
+        {
+            status += "HP_low";
         }
         else {
             if (myPetDog.myDog.getIsHunger())
-                status += "true_hunger";
+                status += "true_";
             else
                 status += "false_";
             if (myPetDog.myDog.getIsThirst())
                 status += "true_";
             else
                 status += "false_";
-            status += myPetDog.myDog.getDecoration().name() + "_";
-            status += myPetDog.myDog.getWearMask();
+            status += myPetDog.myDog.getWearMask() + "_";
+            status += myPetDog.myDog.getDecoration().name();
             System.out.println("寵物狀態:" + status);
         }
-        //return status;
+        return status;
     }
 
+    //更新寵物資訊的GUI
+    private void refreshPetStatusGUI()
+    {
+        healthBar.setValue(myPetDog.myDog.getHP());
+        healthLabel.setText("生命值 " + myPetDog.myDog.getHP() + "/1000");
+        thirstBar.setValue(myPetDog.myDog.getThirstValue());
+        thirstLabel.setText("口渴度 " + myPetDog.myDog.getThirstValue() + "/100");
+        hungerBar.setValue(myPetDog.myDog.getHungerValue());
+        hungerLabel.setText("飢餓度 " + myPetDog.myDog.getHungerValue() + "/100");
+    }
+
+    //更新寵物目前狀態的GIF
     private void changePetGif()
     {
         String status = new String();
+        status = getPetStatus();
+        System.out.println(status);
+        ImageIcon petGif = new ImageIcon( "pet_Connected_Data/Gifs/" + status + ".gif");
+        Image resizingImage = petGif.getImage().getScaledInstance(400,300,Image.SCALE_DEFAULT);
+        pet.setIcon(new ImageIcon(resizingImage));
     }
 
+    //寵物目前的狀態
     private void nowPetStatus()
     {
-        if(myPetDog.myDog.getHP() <= 200)
+        if(myPetDog.myDog.getHP() <= 0)
+        {
+            stateTextArea.append("寵物死亡了>:(\n");
+            stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());
+        }
+        else if(myPetDog.myDog.getHP() <= 200)
         {
             stateTextArea.append("寵物現在狀態很不好:(\n");
             stateTextArea.setCaretPosition(stateTextArea.getDocument().getLength());

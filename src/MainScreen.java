@@ -134,11 +134,18 @@ public class MainScreen extends JFrame{
             else if(event.getSource() == bookkeepingFrame.getBokkeepingButton())
             {
                 try {
-                    int m = Integer.parseInt(bookkeepingFrame.getMoneyTextField().getText());
-                    System.out.println("記了一筆帳:" + m);
-                    petFrame.getMyPetDog().myBag.setMoney(petFrame.getMyPetDog().myBag.getMoney() + 50);
-                    petFrame.getUserMoney().setText("目前金錢 $:" + petFrame.getMyPetDog().myBag.getMoney());
-                    petFrame.getMyPetDog().writeBagDataCsv();
+                    if(bookkeepingFrame.getMoneyTextField().getText().equals("chiwawa"))
+                    {
+                        ImageIcon tmp = new ImageIcon("pet_Connected_Data/Gifs/tenor.gif");
+                        petFrame.getPet().setIcon(tmp);
+                    }
+                    else {
+                        int m = Integer.parseInt(bookkeepingFrame.getMoneyTextField().getText());
+                        System.out.println("記了一筆帳:" + m);
+                        petFrame.getMyPetDog().myBag.setMoney(petFrame.getMyPetDog().myBag.getMoney() + 50);
+                        petFrame.getUserMoney().setText("目前金錢 $:" + petFrame.getMyPetDog().myBag.getMoney());
+                        petFrame.getMyPetDog().writeBagDataCsv();
+                    }
                 }
                 catch (NumberFormatException ex)
                 {
