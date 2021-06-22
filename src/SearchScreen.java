@@ -48,6 +48,9 @@ public class SearchScreen extends JFrame{
     private final JButton searchYearButton;
     private final JButton searchMonthButton;
     private final JButton searchTargetTimeButton;
+    private final JButton filesaveButton;
+    private String[] fileSaveData = new String[5];
+    private ArrayList<Account> fileSaveList = new ArrayList<>();
 
     private String[][] data = {};
     private int totalExpenditure = 0;
@@ -144,6 +147,9 @@ public class SearchScreen extends JFrame{
         deleteButton = new JButton("刪除資料");
         deleteButton.addActionListener(buttonHandle);
 
+        filesaveButton = new JButton("匯出檔案");
+        filesaveButton.addActionListener(buttonHandle);
+
         //初始化JTable
         showInfoTable = new JTable(new DefaultTableModel(data,COLUME_NAMES));
         tableModel = (DefaultTableModel) showInfoTable.getModel();
@@ -170,9 +176,11 @@ public class SearchScreen extends JFrame{
         searchMonthButton.setBounds(581,150,100,80);
         searchTargetTimeButton.setBounds(681,150,100,80);
         showInfoScrollPane.setBounds(0,230,783,200);
-        totalExpenditureLabel.setBounds(0,435,783,60);
-        totalIncomeLabel.setBounds(0,495,783,65);
+        totalExpenditureLabel.setBounds(0,435,550,60);
+        totalIncomeLabel.setBounds(0,495,550,65);
+        filesaveButton.setBounds(680,430,100,80);
         //加到畫面上
+        add(filesaveButton);
         add(backButton);
         add(comboBoxPanel);
         add(label1);
@@ -250,10 +258,11 @@ public class SearchScreen extends JFrame{
             {
                 money += str[i];
             }
-            System.out.println("The money: " + money);
+            //System.out.println("The money: " + money);
             return Integer.parseInt(money);
         }
     }
+
 
 
     private class buttonHandler implements ActionListener
@@ -343,6 +352,55 @@ public class SearchScreen extends JFrame{
                     System.out.println("刪除發生錯誤\n" + e);
                 }
             }
+            else if(event.getSource() == filesaveButton)
+            {
+                for(int i=0;i<tableModel.getRowCount();i++) {
+                    //System.out.println("The data is :" + tableModel.getDataVector().elementAt(i));
+                    Vector vectorData = tableModel.getDataVector().elementAt(i);
+                    for (int j = 0; j < vectorData.size(); j++) {
+                        fileSaveData[j] = (String) vectorData.elementAt(j);
+                    }
+                    Account tmp = getDataFileSave(fileSaveData);
+                    fileSaveList.add(tmp);
+                }
+                /*for(int i=0;i<fileSaveList.size();i++)
+                System.out.println(fileSaveList.get(i).formatCsvString());*/
+                fileSaveList.clear();
+                String filePath = new String();
+                JFileChooser fileChooser = new JFileChooser();
+
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+                int returnVal = fileChooser.showOpenDialog(fileChooser);
+
+                if(returnVal == JFileChooser.APPROVE_OPTION)
+                {
+                    filePath= fileChooser.getSelectedFile().getAbsolutePath();
+                    System.out.println(filePath);
+                }
+
+                bookOperation.exportFile(filePath,fileSaveList);
+            }
+        }
+
+        //把所選擇的table資料轉成account型態
+        public Account getDataFileSave(String[] data)
+        {
+            String[] Day = data[0].split("-");
+            int year = Integer.parseInt(Day[0]);
+            int month = Integer.parseInt(Day[1]);
+            int date = Integer.parseInt(Day[2]);
+            int money = convertToMoney(data[1]);
+            boolean status;
+            if(data[4].equals("收入")) {
+                status = false;
+            }
+            else {
+                status = true;
+            }
+            Account tmp = new Account(year,month,date,data[3],data[2],money,status);
+            //System.out.println("The selected data account: \n" + tmp.formatCsvString());
+            return tmp;
         }
 
         //把所選擇的table資料轉成account型態
