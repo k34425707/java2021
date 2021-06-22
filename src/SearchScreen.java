@@ -50,7 +50,6 @@ public class SearchScreen extends JFrame{
     private final JButton searchTargetTimeButton;
     private final JButton filesaveButton;
     private String[] fileSaveData = new String[5];
-    private ArrayList<Account> fileSaveList = new ArrayList<>();
 
     private String[][] data = {};
     private int totalExpenditure = 0;
@@ -354,6 +353,7 @@ public class SearchScreen extends JFrame{
             }
             else if(event.getSource() == filesaveButton)
             {
+                ArrayList<Account> fileSaveList = new ArrayList<>();
                 for(int i=0;i<tableModel.getRowCount();i++) {
                     //System.out.println("The data is :" + tableModel.getDataVector().elementAt(i));
                     Vector vectorData = tableModel.getDataVector().elementAt(i);
@@ -363,9 +363,8 @@ public class SearchScreen extends JFrame{
                     Account tmp = getDataFileSave(fileSaveData);
                     fileSaveList.add(tmp);
                 }
-                /*for(int i=0;i<fileSaveList.size();i++)
-                System.out.println(fileSaveList.get(i).formatCsvString());*/
-                fileSaveList.clear();
+                for(int i=0;i<fileSaveList.size();i++)
+                System.out.println(fileSaveList.get(i).formatCsvString());
                 String filePath = new String();
                 JFileChooser fileChooser = new JFileChooser();
 
