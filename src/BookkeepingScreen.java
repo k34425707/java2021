@@ -246,6 +246,8 @@ public class BookkeepingScreen extends JFrame{
 
     public JTextField getMoneyTextField() { return moneyTextField; }
 
+    public DefaultTableModel getTableModel() { return tableModel; }
+
     //按鈕的事件處理器
     private class ButtonHandler implements ActionListener
     {

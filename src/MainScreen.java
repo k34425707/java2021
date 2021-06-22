@@ -99,6 +99,8 @@ public class MainScreen extends JFrame{
                 bookkeepingFrame.setLocation(MainScreen.this.getX(), MainScreen.this.getY());
                 bookkeepingFrame.setVisible(true);
                 MainScreen.this.setVisible(false);
+                bookkeepingFrame.getTableModel().setRowCount(0);
+                bookkeepingFrame.getMoneyTextField().setText("請輸入金錢");
             }
             else if(event.getSource() == searchButton)
             {
