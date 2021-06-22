@@ -77,4 +77,17 @@ public class Account
     {
         return String.format(this.getYear()+","+this.getMonth()+","+this.getDay()+","+this.getType()+","+this.getDescription()+","+this.getMoneySum()+","+this.getIsExpenditure());
     }
+    public String formatExportCsvString()
+    {
+        String output= String.format(this.getYear()+","+this.getMonth()+","+this.getDay()+","+this.getType()+","+this.getDescription()+","+this.getMoneySum()+",");
+        if(this.getIsExpenditure())
+        {
+            output+="支出";
+        }
+        else
+        {
+            output+="收入";
+        }
+        return output;
+    }
 }

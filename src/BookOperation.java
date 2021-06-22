@@ -195,17 +195,20 @@ public class BookOperation
         return accountsString;
     }
 
-    public void exportFile(String filePath,ArrayList<Account> input)
+    public void exportFile(String filePath,ArrayList<Account> input,String fileName)
     {
-        File exportCSV=new File(filePath+"exportAccount.csv");
+        File exportCSV=new File(filePath+"/"+fileName+".csv");
+        
         try
         {
-            BufferedWriter bw=new BufferedWriter(new FileWriter(exportCSV,true));
+            BufferedWriter bw=new BufferedWriter(new FileWriter(exportCSV,false));
             exportCSV.createNewFile();
+            bw.write("年,月,日,類型,類型,金額,收入/支出");
             for(Account a:input)
             {
-                bw.write(a.formatCsvString());
+                //System.out.println(a.formatExportCsvString());
                 bw.newLine();
+                bw.write(a.formatExportCsvString());
             }
             bw.close();
         }
