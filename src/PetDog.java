@@ -135,7 +135,7 @@ public class PetDog {
         }else{
             this.doReviseHP=true;
         }
-        checkHungerAndThirstStatus();
+        this.checkHungerAndThirstStatus();
     }
 
     public void reviseHP()//根據飢渴度調整HP
@@ -184,6 +184,11 @@ public class PetDog {
         {
             this.isHunger=true;
             this.isThirst=true;
+        }
+        if(HP<=200)
+        {
+            this.decoration=Decoration.nothing;
+            this.wearMask=false;
         }
     }
     public void updatePetStatus()//在開啟程式時補上次關掉程式後的進度
