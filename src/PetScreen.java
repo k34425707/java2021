@@ -684,10 +684,10 @@ public class PetScreen extends JFrame{
     public void createStore()
     {
         storeModel.addElement(commodities[0] + "                $5");
-        storeModel.addElement(commodities[1] + "                   $5");
-        storeModel.addElement(commodities[2] + "           $500");
+        storeModel.addElement(commodities[1] + "                 $5");
+        storeModel.addElement(commodities[2] + "          $500");
         storeModel.addElement(commodities[3] + "           $800");
-        storeModel.addElement(commodities[4] + "        $800");
+        storeModel.addElement(commodities[4] + "       $800");
         storeModel.addElement(commodities[5] + "     $800");
         storeModel.addElement(commodities[6] + "         $800");
         storeModel.addElement(commodities[7] + "                $800");
