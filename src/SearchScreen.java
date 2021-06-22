@@ -353,6 +353,7 @@ public class SearchScreen extends JFrame{
             }
             else if(event.getSource() == filesaveButton)
             {
+                String name = JOptionPane.showInputDialog("Input the filename");
                 ArrayList<Account> fileSaveList = new ArrayList<>();
                 for(int i=0;i<tableModel.getRowCount();i++) {
                     //System.out.println("The data is :" + tableModel.getDataVector().elementAt(i));
@@ -378,7 +379,7 @@ public class SearchScreen extends JFrame{
                     System.out.println(filePath);
                 }
 
-                bookOperation.exportFile(filePath,fileSaveList);
+                bookOperation.exportFile(filePath,fileSaveList,name);
             }
         }
 
