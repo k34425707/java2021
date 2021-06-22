@@ -194,4 +194,24 @@ public class BookOperation
         }
         return accountsString;
     }
+
+    public void exportFile(String filePath,ArrayList<Account> input)
+    {
+        File exportCSV=new File(filePath+"exportAccount.csv");
+        try
+        {
+            BufferedWriter bw=new BufferedWriter(new FileWriter(exportCSV,true));
+            exportCSV.createNewFile();
+            for(Account a:input)
+            {
+                bw.write(a.formatCsvString());
+                bw.newLine();
+            }
+            bw.close();
+        }
+        catch(IOException e)
+        {
+            System.out.println(e);
+        }
+    }
 }
